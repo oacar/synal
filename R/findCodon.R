@@ -10,7 +10,7 @@
 #'@seealso \code{\link{findBoth}} for usage
 #'@export
 
-findCodon<-function(sequence, codonSet){
+findCodon<-function(sequence, codonSet, l=-1){
 
   if(codonSet!='ATG' && any(codonSet!=c('TAA', 'TAG', 'TGA') )){
     stop('codonSet should be either \'ATG\' or c(\'TAA\', \'TAG\', \'TGA\')')
@@ -42,7 +42,7 @@ findCodon<-function(sequence, codonSet){
       i<-length(allCoordinates)
       while(i>0){
         diff_<-allCoordinates[i]-1
-        if((diff_)%%3==0 && diff_<min_ && diff_>length(seqWoGaps)){
+        if((diff_)%%3==0 && diff_<min_ && diff_>l){
           min_<-diff_
           min_index<-i
           min_i<-allCoordinates_withGaps[i]

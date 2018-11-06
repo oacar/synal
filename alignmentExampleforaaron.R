@@ -16,26 +16,27 @@ path<-''
 newPath<-''
 
 mainFile<-'data/alignmentInput/'
+newFolder <- '../alignment_data/1/'
 p_<-paste(mainFile,'sequenceFilescopy/',sep = '')
 ##these are to copy problematic files to different folders
 #npp and noorfwithstartandstop are explained in 'Find orf for aligned regions' section
-npp<-paste(mainFile,'/','npp',sep = '')
-noorfwithstartandstop<-paste(mainFile,'/','noorfwithmandx/',sep = '')
+npp<-paste(newFolder,'/','npp',sep = '')
+noorfwithstartandstop<-paste(newFolder,'/','noorfwithmandx/',sep = '')
 
 #this script and whole functions are based on having (scer-spar-smik-skud-sbay) sequence files. so everything is assumed in this order. You can use less number of sequences but for example whatever is on the 3rd sequence will be treated as Mik sequence
 #In order not to make wrong analysis, when one of the sequences is not available, the folder is moved to 'noseq' folder and the alignment is not performed.
-noseq<-paste(mainFile,'/','noseq',sep = '')
+noseq<-paste(newFolder,'/','noseq',sep = '')
 
 #muscle cannot align sequences if one of them has no nucleotides. So in that case an appropriate warning message is shown and the folder is moved to noregion folder
-noregion<-paste(mainFile,'/','noregion',sep = '')
+noregion<-paste(newFolder,'/','noregion',sep = '')
 #if proto-gene ORF cannot be found on scer sequence, the folder is moved to noseqrange
-noseqrange<-paste(mainFile,'/','noseq/noSeqRange',sep = '')
+noseqrange<-paste(newFolder,'/','noseq/noSeqRange',sep = '')
 #if all above not the case, then the folder is moved to noproblem folder
-noproblem<-paste(mainFile,'/','noProblem/',sep = '')
+noproblem<-paste(newFolder,'/','noProblem/',sep = '')
 
 #all the above is to help tracking the possible problems related with the alignments. so the script is very much open to improvements
 iter<-0
-dirName<-'YLR412C-A'
+#dirName<-'YBL100W-C'
 dir.create(noorfwithstartandstop)
 dir.create(noseq)
 dir.create(noregion)
@@ -53,15 +54,17 @@ for ( dirName in list.files(p_)){
 
   #read files####
   #mySequences<-readFiles(path)
-  mySequences<-readDNAStringSet(paste(path,'/YLR412C-A_alignment.fa',sep = ''))
-  mySequences <- mySequences[1:(length(mySequences)-1)]
+  mySequences<-readDNAStringSet(paste(path,'/',dirName,'_alignment.fa',sep = ''))
+  if(length(mySequences)==6){
+    mySequences <- mySequences[1:(length(mySequences)-1)]
+  }
   seq<-findYGeneSeq('~/alignment/scer/orf_genomic_all.fasta', dirName, NULL)
   mySequences <- append(mySequences,seq)
   mySequences<-chartr('N','-',mySequences)
 
   print(dirName)
   #current script is to align 5 sequences and proto-gene sequence being the 6th. to get the subalignment you need the proto-gene sequence
-  t<-4
+  t<-6
   if(length(mySequences)!=t){
     warning(paste(dirName,' ','File is missing one of the ',t-1,' sequences',sep = ' '))
     file.rename(path, noseqPath)
@@ -194,23 +197,17 @@ for ( dirName in list.files(p_)){
         if(TRUE){next}
       }
     } else if(CheckOrf=='Neither'){
-      find.orf.start<-findPrevStart(DNAStr,j,start,stop,dirName)
-      find.orf.stop<-findNextStop(DNAStr,j,start,stop,dirName)
-      if(find.orf.start$writeFile==T && find.orf.stop$writeFile==T){
-        if((find.orf.start$NextStop-find.orf.start$PrevStart)>(find.orf.stop$NextStop-find.orf.stop$PrevStart)){
-          find.orf<-find.orf.start
-        }else{
-          find.orf<-find.orf.stop
-        }
-      }else if(find.orf.start$writeFile==T && is.null(find.orf.stop$writeFile)==T){
-        find.orf<-find.orf.start
-      }else if(is.null(find.orf.start$writeFile)==T && find.orf.stop$writeFile==T){
-        find.orf <- find.orf.stop
-      }else{
+
+      longerOverlap <- findLongerOverlap(DNAStr,j,start,stop,dirName, aa_alignment)
+      if(isFALSE(longerOverlap)){
         newPath<-paste(noorfwithstartandstop,dirName,sep = '/')
         if(TRUE){next}
+      }else{
+        find.orf <- longerOverlap
       }
+
     }
+
 
 
   if (find.orf$writeFile){

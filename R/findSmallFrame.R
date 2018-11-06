@@ -9,7 +9,7 @@
 #' @import muscle
 #'@export
 
-findSmallFrame <- function(aaAlignment, whichSeq) {
+findSmallFrame <- function(aaAlignment, whichSeq, seqAA.alignment=NULL) {
   out<-tryCatch(
     {id<--1
     if(whichSeq=='Para'){
@@ -77,6 +77,38 @@ findSmallFrame <- function(aaAlignment, whichSeq) {
         aaSmall<-subseq(aaSmall,startPos, stopPos)
         aaSmall<-AAStringSet(muscle(aaSmall))
         return(aaSmall)
+      }else if(orf=="Neither"){
+        if(is.null(seqAA.alignment)==F){
+          if(seqAA.alignment[1]=='M' | seqAA.alignment[1]==I){
+            startPos<-1
+            stopPos<-checkCodon(aaAlignment[[id]],'X')
+
+            aaSmall<-subseq(aaAlignment,startPos, stopPos)
+            aaSmall<-AAStringSet(muscle(aaSmall))
+
+            stopPos<-checkCodon(aaSmall[[id]],'X')
+            aaSmall<-subseq(aaSmall,startPos, stopPos)
+            aaSmall<-AAStringSet(muscle(aaSmall))
+            return(aaSmall)
+          }else{
+            startPos<-checkCodon(aaAlignment[[id]],'M')
+            if(startPos==-1){
+              startPos<-checkCodon(aaAlignment[[id]],'I')
+            }
+            stopPos<-length(aaAlignment[[1]])
+
+            aaSmall<-subseq(aaAlignment,startPos, stopPos)
+            aaSmall<-AAStringSet(muscle(aaSmall))
+            startPos<-checkCodon(aaSmall[[id]],'M')
+            if(startPos==-1){
+              startPos<-checkCodon(aaSmall[[id]],'I')
+            }
+            stopPos<-length(aaSmall[[1]])
+            aaSmall<-subseq(aaSmall,startPos, stopPos)
+            aaSmall<-AAStringSet(muscle(aaSmall))
+            return(aaSmall)
+          }
+        }else{return(FALSE)}
       }else{return(FALSE)}
     }},
     error=function(cond){

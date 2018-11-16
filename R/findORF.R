@@ -11,16 +11,18 @@ findORF<- function(aa_seq){
   check=FALSE
   mx=regexpr("M[^X]*X",aa_seq)[[1]][1]
   mLength<-attr(regexpr("M[^X]*X",aa_seq), "match.length")[1]
-  ix=regexpr("I[^X]*X",aa_seq)[[1]][1]
-  iLength<-attr(regexpr("I[^X]*X",aa_seq), "match.length")[1]
-  if(mx!=-1){
-    if(ix!=-1 && mLength<iLength){
-      return(list(ix, ix+iLength-1))
-    }else{
-      return(list(mx, mx+mLength-1))
-    }
-  }else{
-    return(list(ix, ix+iLength-1))
-  }
+  # ix=regexpr("I[^X]*X",aa_seq)[[1]][1]
+  # iLength<-attr(regexpr("I[^X]*X",aa_seq), "match.length")[1]
+
+  return(list(mx,mx+mLength-1))
+  # if(mx!=-1){
+  #   if(ix!=-1 && mLength<iLength){
+  #     return(list(ix, ix+iLength-1))
+  #   }else{
+  #     return(list(mx, mx+mLength-1))
+  #   }
+  # }else{
+  #   return(list(ix, ix+iLength-1))
+  # }
 
 }

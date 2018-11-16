@@ -1,8 +1,11 @@
+library(tidyverse)
 library(openxlsx)
 library(Biostrings)
+library(synal)
 source('functions.R')
 #p_ is the directory containing the alignment files' folders
-p_<-'data/analysisInput/alignmentFiles//'
+#p_<-'data/analysisInput/alignmentFiles//'
+p_ <- '../macbook_data/anne/syntenic_lethal_network/aaronAlignments/y_genes/noProblem/'
 fls<-list.files(p_)
 colNames<-c("ORF Name",	"Do all Start Codon Align?" ,"Do all Stop Codon Align","Length of ORF",
             "Length of Amino Acid Sequence ORF",	"What is the Start Codon in Para?","What is the Start Codon(DNA) in Para?","What is the Start Codon in Para with Macse?"		,"Does start codon align in Para?","What is the Stop Codon in Para?","What is the Stop Codon in Para with Macse?",
@@ -211,7 +214,7 @@ for ( i in 1:length(fls)){
   dataTable$`Is it a different size mik?`[i]<-dataTable$`Length of Amino Acid Sequence ORF`[i]==dataTable$`Length of Mik Amino Acid Start to Finish without Gaps`[i]
 
   #Kud analysis####
-  if(length(subalign)==5){
+  if(length(subalign)==6){
     kudFrameShifts<-countFrameShifting(aa_macse.p[4])
     if(kudCheck){
       dataTable$`Is there an ORF in the Kud Amino Acid Sequence?`[i]<-TRUE
@@ -309,4 +312,4 @@ for ( i in 1:length(fls)){
   }
 }
 
-write.xlsx(dataTable, 'data.example.xlsx')
+write.xlsx(dataTable, 'data.noprobpgs.xlsx')

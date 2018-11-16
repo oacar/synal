@@ -36,14 +36,15 @@ noproblem<-paste(newFolder,'/','noProblem/',sep = '')
 
 #all the above is to help tracking the possible problems related with the alignments. so the script is very much open to improvements
 iter<-0
-#dirName<-'YBL100W-C'
+#dirName<-'YMR247W-A'
+dirName <- 'YLR159W'
 dir.create(noorfwithstartandstop)
 dir.create(noseq)
 dir.create(noregion)
 dir.create(npp)
 dir.create(noseqrange)
 dir.create(noproblem)
-p_ <- '/home/oma21/Main/macbook_data/anne/syntenic_lethal_network/aaronAlignments/y_genes/noorfwithmandx/'
+p_ <- '/home/oma21/Main/macbook_data/anne/syntenic_lethal_network/aaronAlignments/y_genes/noseq/'
 for ( dirName in list.files(p_)){
   file.rename(path, newPath)
   path<-paste(p_,dirName, sep="/")
@@ -168,7 +169,7 @@ for ( dirName in list.files(p_)){
   #take whichever is longer.    I didn't have time to do this. So " CheckOrf=='Neither' " shows this case and they are moved to 'noorfwithstartandstop' folder
 
   types<-c('scer','para','mik','kud','bay')
-  for(j in 2:length(DNAStr)){
+  for(j in 2:length(DNAStr[-5])){
   PrevStart<-start
   NextStop<-stop
   CheckOrf<-checkORF(aa_alignment[[j]])

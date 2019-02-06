@@ -47,30 +47,35 @@ readFiles<-function(path){
     return(FALSE)
   } else {
     scer_seq <- (readDNAStringSet(sprintf("%s", paste(path, scername, sep = "/"))))
+    names(scer_seq) <- 'Scer'
   }
   if (sparname == "") {
     warning("No Spar file is found")
     spar <- FALSE
   } else {
     spar_seq <- (readDNAStringSet(sprintf("%s", paste(path, sparname, sep = "/"))))
+    names(spar_seq) <- 'Spar'
   }
   if (smikname == "") {
     warning("No Smik file is found")
     smik <- FALSE
   } else {
     smik_seq <- (readDNAStringSet(sprintf("%s", paste(path, smikname, sep = "/"))))
+    names(smik_seq) <- 'Smik'
   }
   if (sbayname == "") {
     warning("No Sbay file is found")
     sbay <- FALSE
   } else {
     sbay_seq <- (readDNAStringSet(sprintf("%s", paste(path, sbayname, sep = "/"))))
+    names(sbay_seq) <- 'Sbay'
   }
   if (skudname == "") {
     warning("No Skud file is found")
     skud <- FALSE
   } else {
     skud_seq <- (readDNAStringSet(sprintf("%s", paste(path, skudname, sep = "/"))))
+    names(skud_seq) <- 'Skud'
   }
   if (smorfname == "") {
     stop("No smorf file is found")

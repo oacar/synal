@@ -7,21 +7,21 @@
 #'@param stop stop position of the S. Cerevisiae ORF over the alignment object. It is used for when the Start codon not found
 #'
 #'@return The list of boolean value for which will be used to determine if another subalignment and AA translation will be written and new start and stop positions
-#'      
+#'
 #'
 #'
 #'@export
 
-findNextStop <- function(DNAStr, speciesIndex, start, stop,orfName) {
-  NextStop<-findCodon(DNAStr[[speciesIndex]][start:length(DNAStr[[speciesIndex]])],c('TAA', 'TAG', 'TGA'))+start-1
+findNextStop <- function(DNAStr, speciesIndex, start, stop,orfName, l=-1) {
+  NextStop<-findCodon(DNAStr[[speciesIndex]][start:length(DNAStr[[speciesIndex]])],c('TAA', 'TAG', 'TGA'),l)+start-1
   writeFile<-FALSE
   if(NextStop<=0 || NextStop==Inf){
-    return(list(writeFile=NULL, 
+    return(list(writeFile=NULL,
                 PrevStart=start,
                 NextStop=stop))
   }
   writeFile=TRUE
-  return(list(writeFile=writeFile, 
+  return(list(writeFile=writeFile,
               PrevStart=start,
               NextStop=NextStop))
 }

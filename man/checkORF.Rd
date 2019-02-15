@@ -15,6 +15,6 @@ If there is no ORF check what is missing an M or X
 If M is missing return 'M'  --- if X is missing return 'X' --- if both are missing return 'BOTH', if there is not orf but X ---- M sequence, it will return 'Neither'
 }
 \description{
-Checks if Amino Acid sequence has M --- X or I --- X ORF by using regular expressions. 
+Checks if Amino Acid sequence has M --- X or I --- X ORF by using regular expressions.
 This can be changed to only check M --- X ORF, or for any other start codons
 }

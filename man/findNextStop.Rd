@@ -4,7 +4,7 @@
 \alias{findNextStop}
 \title{Search for stop codon to get the overlapping orf}
 \usage{
-findNextStop(DNAStr, speciesIndex, start, stop, orfName)
+findNextStop(DNAStr, speciesIndex, start, stop, orfName, l = -1)
 }
 \arguments{
 \item{DNAStr}{aligned DNAStringSet object}

@@ -5,14 +5,21 @@
 \title{Find small ORF frame
 Finds the ORF region over the other species if there is a smaller ORF, or just returns the overlapping parts of the Scer and the Other species' ORF}
 \usage{
-findSmallFrame(aaAlignment, whichSeq)
+findSmallFrame(aaAlignment, whichSeq, seqAA.alignment = NULL)
 }
 \arguments{
 \item{aaAlignment}{aligned AAStringSet object}
 
 \item{whichSeq}{string spesifying the other species name. c('Para','Mik', 'Bay', 'Kud') are acceptable}
+
+\item{aaAlignment}{aligned AAStringSet object}
+
+\item{whichSeq}{string spesifying the other species name. c('Para','Mik', 'Bay', 'Kud') are acceptable}
 }
 \value{
+small orf alignment or overlapping region of alignment
+returns FALSE if alignment causes an error. Should be checked on main script properly
+
 small orf alignment or overlapping region of alignment
 returns FALSE if alignment causes an error. Should be checked on main script properly
 }

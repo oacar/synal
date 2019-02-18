@@ -11,7 +11,7 @@ aaTranslation <-function(subalign, DNAStr){
     s_wogaps=''
     DNA_wogaps<-DNAStringSet()
     for(i in 1:length(subalign)){
-      for (j in 1:length(subalign[[1]])){
+      for (j in 1:length(subalign[[i]])){
         if(as.character(subalign[[i]][j])!='-'){
           s_wogaps=paste(s_wogaps, as.character(subalign[[i]][j]), sep = '')
         }
@@ -19,7 +19,7 @@ aaTranslation <-function(subalign, DNAStr){
       DNA_wogaps<-append(DNA_wogaps, DNAStringSet(s_wogaps))
       s_wogaps=''
     }
-    names(DNA_wogaps)=names(subalign)
+    names(DNA_wogaps)=names(DNAStr)
     attr(GENETIC_CODE, "alt_init_codons")=character(0)
     aatr<-translate(DNA_wogaps,genetic.code = GENETIC_CODE)
     for(i in 1:length(subalign)){
@@ -30,7 +30,7 @@ aaTranslation <-function(subalign, DNAStr){
     aatr<-chartr('*','X',aatr)
     aa_alignment<-muscle(aatr)
     aa_alignment<-AAStringSet(aa_alignment)
-    
+
     return(aa_alignment)},
     error=function(cond){
       message('No region on one of sequence found!')

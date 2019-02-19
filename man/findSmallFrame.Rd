@@ -5,7 +5,8 @@
 \title{Find small ORF frame
 Finds the ORF region over the other species if there is a smaller ORF, or just returns the overlapping parts of the Scer and the Other species' ORF}
 \usage{
-findSmallFrame(aaAlignment, whichSeq, seqAA.alignment = NULL)
+findSmallFrame(aaAlignment, whichSeq, seqAA.alignment = NULL,
+  overlap = F)
 }
 \arguments{
 \item{aaAlignment}{aligned AAStringSet object}

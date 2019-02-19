@@ -1,26 +1,17 @@
-
 #'Find small ORF frame
 #'Finds the ORF region over the other species if there is a smaller ORF, or just returns the overlapping parts of the Scer and the Other species' ORF
 #'@param aaAlignment aligned AAStringSet object
 #'@param whichSeq string spesifying the other species name. c('Para','Mik', 'Bay', 'Kud') are acceptable
+#'@param seqAA.alignment if trying to find overlapping region when there is ....X......M..... situation where X comes before M, this will be used and is the AAString instance for that frame AA
+#'@param overlap is false by default. Used only in \code{findBestOverlap} to distinguish with normal usage of function. When this is true, and seqAA.alignment is needed, it will only return the overlapping region from start of sequence to X codon
+#'@param longer is false by default. Used only in \code{findBestOverlap} for now. It is to distinguish actual start codon with other start codons in the overlapping region to find correct overlap
 #'@return small orf alignment or overlapping region of alignment
 #' returns FALSE if alignment causes an error. Should be checked on main script properly
 #' @import Biostrings
 #' @import muscle
 #'@export
 
-
-#'Find small ORF frame
-#'Finds the ORF region over the other species if there is a smaller ORF, or just returns the overlapping parts of the Scer and the Other species' ORF
-#'@param aaAlignment aligned AAStringSet object
-#'@param whichSeq string spesifying the other species name. c('Para','Mik', 'Bay', 'Kud') are acceptable
-#'@return small orf alignment or overlapping region of alignment
-#' returns FALSE if alignment causes an error. Should be checked on main script properly
-#' @import Biostrings
-#' @import muscle
-#'@export
-
-findSmallFrame <- function(aaAlignment, whichSeq, seqAA.alignment=NULL) {
+findSmallFrame <- function(aaAlignment, whichSeq, seqAA.alignment=NULL,overlap=F,longer=F) {
   out<-tryCatch(
     {
       id<--1
@@ -46,21 +37,21 @@ findSmallFrame <- function(aaAlignment, whichSeq, seqAA.alignment=NULL) {
       orf<-checkORF(aaAlignment[[id]])
       if(orf==TRUE){
         coors<-findORF(aaAlignment[[id]])
-        startPos<-coors[[1]]
+        startPos<-ifelse(longer,coors[[1]],1)
         stopPos<-coors[[2]]
 
         if(startPos==-1 || stopPos==-1){
           return(FALSE)
         }
         aaSmall<-subseq(aaAlignment,startPos, stopPos)
-        aaSmall<-AAStringSet(muscle(aaSmall))
-        startPos<-checkCodon(aaSmall[[id]],'M')
+        aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
+        startPos<-ifelse(longer,checkCodon(aaSmall[[id]],'M'),1)
         # if(startPos==-1){
         #   startPos<-checkCodon(aaSmall[[id]],'I')
         # }
         stopPos<-checkCodon(aaSmall[[id]],'X')
         aaSmall<-subseq(aaSmall,startPos, stopPos)
-        aaSmall<-AAStringSet(muscle(aaSmall))
+        aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
         return(aaSmall)
       }else{
         if(orf=="BOTH"){
@@ -70,11 +61,11 @@ findSmallFrame <- function(aaAlignment, whichSeq, seqAA.alignment=NULL) {
           stopPos<-checkCodon(aaAlignment[[id]],'X')
 
           aaSmall<-subseq(aaAlignment,startPos, stopPos)
-          aaSmall<-AAStringSet(muscle(aaSmall))
+          aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
 
           stopPos<-checkCodon(aaSmall[[id]],'X')
           aaSmall<-subseq(aaSmall,startPos, stopPos)
-          aaSmall<-AAStringSet(muscle(aaSmall))
+          aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
           return(aaSmall)
         }else if(orf=="X"){
           startPos<-checkCodon(aaAlignment[[id]],'M')
@@ -84,27 +75,27 @@ findSmallFrame <- function(aaAlignment, whichSeq, seqAA.alignment=NULL) {
           stopPos<-length(aaAlignment[[1]])
 
           aaSmall<-subseq(aaAlignment,startPos, stopPos)
-          aaSmall<-AAStringSet(muscle(aaSmall))
+          aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
           startPos<-checkCodon(aaSmall[[id]],'M')
           # if(startPos==-1){
           #   startPos<-checkCodon(aaSmall[[id]],'I')
           # }
           stopPos<-length(aaSmall[[1]])
           aaSmall<-subseq(aaSmall,startPos, stopPos)
-          aaSmall<-AAStringSet(muscle(aaSmall))
+          aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
           return(aaSmall)
         }else if(orf=="Neither"){
           if(is.null(seqAA.alignment)==F){
-            if(seqAA.alignment[1]=='M'){
+            if(as.character(seqAA.alignment[1])=='M' | overlap){
               startPos<-1
               stopPos<-checkCodon(aaAlignment[[id]],'X')
 
               aaSmall<-subseq(aaAlignment,startPos, stopPos)
-              aaSmall<-AAStringSet(muscle(aaSmall))
+              aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
 
               stopPos<-checkCodon(aaSmall[[id]],'X')
               aaSmall<-subseq(aaSmall,startPos, stopPos)
-              aaSmall<-AAStringSet(muscle(aaSmall))
+              aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
               return(aaSmall)
             }else{
               startPos<-checkCodon(aaAlignment[[id]],'M')
@@ -114,14 +105,14 @@ findSmallFrame <- function(aaAlignment, whichSeq, seqAA.alignment=NULL) {
               stopPos<-length(aaAlignment[[1]])
 
               aaSmall<-subseq(aaAlignment,startPos, stopPos)
-              aaSmall<-AAStringSet(muscle(aaSmall))
+              aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
               startPos<-checkCodon(aaSmall[[id]],'M')
               # if(startPos==-1){
               #   startPos<-checkCodon(aaSmall[[id]],'I')
               # }
               stopPos<-length(aaSmall[[1]])
               aaSmall<-subseq(aaSmall,startPos, stopPos)
-              aaSmall<-AAStringSet(muscle(aaSmall))
+              aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
               return(aaSmall)
             }
           }else{return(FALSE)}

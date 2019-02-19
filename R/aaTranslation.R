@@ -21,14 +21,14 @@ aaTranslation <-function(subalign, DNAStr){
     }
     names(DNA_wogaps)=names(DNAStr)
     attr(GENETIC_CODE, "alt_init_codons")=character(0)
-    aatr<-translate(DNA_wogaps,genetic.code = GENETIC_CODE)
+    aatr<-suppressWarnings(translate(DNA_wogaps,genetic.code = GENETIC_CODE))
     for(i in 1:length(subalign)){
       if(width(aatr)[i]==0){
         return(FALSE)
       }
     }
     aatr<-chartr('*','X',aatr)
-    aa_alignment<-muscle(aatr)
+    aa_alignment<-muscle(aatr,quiet = TRUE)
     aa_alignment<-AAStringSet(aa_alignment)
 
     return(aa_alignment)},

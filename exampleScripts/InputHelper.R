@@ -5,10 +5,10 @@ findSeq<- function(path, geneName, outputPath, negativeStrand, smorfName){
   ##      geneName : annotation name that starts with letter Y
   ##      outputPath : path for output file to be saved
   ##output : saves respective sequence file to outputPath
-  
+
   if(file.exists(path)!=TRUE){
     stop('File does not exist. Give a correct path and file name')
-  }  
+  }
   if(nchar(geneName)<7){
     stop('Gene Name should be equal or bigger than 7')
   }
@@ -25,9 +25,10 @@ findSeq<- function(path, geneName, outputPath, negativeStrand, smorfName){
     type_<-'Skud'
   }
   seqfile<-(readDNAStringSet(path))
-  
+
+  #if(type_ <- )
   for (i in 1:length(seqfile)){
-    if(grepl(geneName,strsplit(names(seqfile)[i],',')[[1]][1],fixed = TRUE)){
+    if(geneName==strsplit(strsplit(names(seqfile)[i],',')[[1]][1],' ')[[1]][1] || (is.na(strsplit(strsplit(names(seqfile)[i],',')[[1]][1],' ')[[1]][2])==F &geneName==strsplit(strsplit(names(seqfile)[i],',')[[1]][1],' ')[[1]][2])){
       index<-i
     }
   }
@@ -36,20 +37,20 @@ findSeq<- function(path, geneName, outputPath, negativeStrand, smorfName){
       warning(sprintf("%s", paste(geneName, 'cannot be found for',smorfName, "for", type_, sep=" ")))}
     else{
       if(type_=='Spar'){
-        NOTFOUNDSPAR<<-NOTFOUNDSPAR+1
+        #NOTFOUNDSPAR<<-NOTFOUNDSPAR+1
        # return(FALSE)
         #  print(NOTFOUNDSPAR)
       }else {
-        NOTFOUNDSMIK<<-NOTFOUNDSMIK+1
+        #NOTFOUNDSMIK<<-NOTFOUNDSMIK+1
         #return(FALSE)
         # print(NOTFOUNDSPAR)
-        
+
       }
       warning(sprintf("%s", paste(geneName, 'cannot be found for', smorfName, "for", type_, sep=" ")))
       return(FALSE)
     }
   }else{  Seq<-seqfile[index]
-  
+
   fileName<-sprintf("%s", paste(outputPath,geneName, sep="/"))
   fileName<-sprintf("%s", paste(fileName,type_, sep="_"))
   fileName<-sprintf("%s", paste(fileName,'.fa', sep=""))
@@ -57,8 +58,8 @@ findSeq<- function(path, geneName, outputPath, negativeStrand, smorfName){
     writeXStringSet(reverseComplement(Seq), file=fileName)
   } else{
     writeXStringSet(Seq, file=fileName)
-    
-  } 
+
+  }
   }
 }
 findYGeneSeq<- function(path, geneName, outputPath){
@@ -66,38 +67,38 @@ findYGeneSeq<- function(path, geneName, outputPath){
   ##      geneName : annotation name that starts with letter Y
   ##      outputPath : path for output file to be saved
   ##output : saves respective sequence file to outputPath
-  
+
   if(file.exists(path)!=TRUE){
     stop('File does not exist. Give a correct path and file name')
-  }  
+  }
   if(nchar(geneName)<7){
     stop('Gene Name should be equal or bigger than 7')
   }
   index<-0
-  
+
   seqfile<-(readDNAStringSet(path))
-  
+
   for (i in 1:length(seqfile)){
     if(geneName ==  strsplit(strsplit(names(seqfile)[i], ',')[[1]][1], ' ')[[1]][1]){
       index<-i
     }
   }
   if(index==0){
-    
+
     warning(sprintf("%s", paste(geneName, 'cannot be found ', sep=" ")))
-    
+
   }else{  Seq<-seqfile[index]
-  
+
   if(is.null(outputPath)){
-    return(Seq) 
+    return(Seq)
   }else{
     fileName<-sprintf("%s", paste(outputPath,geneName, sep="/"))
     fileName<-sprintf("%s", paste(fileName,"sequence", sep="_"))
     fileName<-sprintf("%s", paste(fileName,'.fa', sep=""))
     writeXStringSet(Seq, fileName)
   }
-  
-  return(Seq) 
+
+  return(Seq)
   }
 }
 
@@ -123,7 +124,7 @@ writeSmorfSeq <-function(smorfSeq, Name, path){
   #path<-sprintf("%s", paste(path,"smorf_", sep="/"))
   path<-sprintf("%s", paste(path,Name, sep="/"))
   path<-sprintf("%s", paste(path,"fa", sep="."))
-  
+
   writeXStringSet(smorf,path )
 }
 
@@ -164,7 +165,7 @@ findNearestGene <- function(beg, end,chr,path, name) {
       chromosomeVec<-c(chromosomeVec,strsplit(dummy[i], ' ')[[1]][3])
       startVec<-c(startVec, strsplit(coordinates[i], '-')[[1]][1])
       stopVec<-c(stopVec, strsplit(coordinates[i], '-')[[1]][2])
-      
+
     }}
   startVec<-as.integer(startVec)
   stopVec<-as.integer(stopVec)
@@ -236,13 +237,13 @@ findNearestGenes <- function(beg, end,chr,path, prevNGene=NULL) {
       stopVec<-c(stopVec, strsplit(coordinates[i], '-')[[1]][2])
     }
     else{
-      
+
       dummy<-c(dummy,strsplit(names(scer)[i],',')[[1]][2])
       coordinates<-c(coordinates,strsplit(dummy[i], ' ')[[1]][5])
       chromosomeVec<-c(chromosomeVec,strsplit(dummy[i], ' ')[[1]][3])
       startVec<-c(startVec, strsplit(coordinates[i], '-')[[1]][1])
       stopVec<-c(stopVec, strsplit(coordinates[i], '-')[[1]][2])
-      
+
     }}
   startVec<-as.integer(startVec)
   stopVec<-as.integer(stopVec)
@@ -256,7 +257,7 @@ findNearestGenes <- function(beg, end,chr,path, prevNGene=NULL) {
       endToStart<-abs(end-startVec[i])
       begToStop<-abs(beg-stopVec[i])
       endToStop<-abs(end-stopVec[i])
-      
+
       if(min(begToStart,endToStart,begToStop,endToStop)<min){
         min<-min(begToStart,endToStart,begToStop,endToStop)
         minIndex<-i
@@ -292,7 +293,7 @@ findNearestGenes <- function(beg, end,chr,path, prevNGene=NULL) {
     #         minList<-minList[2:3]
     #       }
     #     }
-    #     
+    #
     #   }
     #   if(begToStop<min){
     #     min<-begToStop
@@ -305,7 +306,7 @@ findNearestGenes <- function(beg, end,chr,path, prevNGene=NULL) {
     #         minList<-minList[2:3]
     #       }
     #     }
-    #     
+    #
     #   }
     #   if(endToStop<min){
     #     min<-endToStop
@@ -320,7 +321,7 @@ findNearestGenes <- function(beg, end,chr,path, prevNGene=NULL) {
     #     }
     #   }
      }}
-    # 
+    #
   if(all(minList<1000) && length(minList)==2){
     ng<-c(scer[nearestList[1]], scer[nearestList[2]])
     ng_name<-c(strsplit(strsplit(names(ng[1]), ',')[[1]][1],' ')[[1]][1],strsplit(strsplit(names(ng[2]), ',')[[1]][1],' ')[[1]][1])

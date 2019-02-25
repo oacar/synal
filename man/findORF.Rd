@@ -4,13 +4,13 @@
 \alias{findORF}
 \title{Find orf start and stop coordinates}
 \usage{
-findORF(aa_seq)
+findORF(aa_seq, findI = F)
 }
 \arguments{
-\item{AAString}{instance}
+\item{AAString}{instance or character vector}
 }
 \value{
-coordinates of M---X sequence if exists and longer than I---X, returns I---X if it exists and Longer than M--X
+coordinates of M---X or I---X. It calcualtes longest orf by considering all M to X pairs and first finds all non-overlapping ORFs and then returns the longest one.
 }
 \description{
 Find orf start and stop coordinates

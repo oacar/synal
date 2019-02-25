@@ -15,17 +15,26 @@ library(StatMatch)
 library(synal)
 options(stringsAsFactors = FALSE)
 #read input files####
-pgs_nodes<-read.csv('data/clusteringInput/filtering_csv/protogenes_nonoverlapping.csv')
+overlapping <- read.csv('../../anne/network_analysis/overlappingorfs.csv')
+pgs_nodes<-read.csv('../data/clusteringInput/filtering_csv/protogenes_nonoverlapping.csv')
 ppp <- read.csv('~/Main/anne/proto_genes',header = F)
 ppp <- ppp$V1
-pccFiltered<-read.csv('data/clusteringInput/filtering_csv/protogenes_pccfiltered.csv')
+pccFiltered<-read.csv('../data/clusteringInput/filtering_csv/protogenes_pccfiltered.csv')
 #dataTable<-read.xlsx('data/clusteringInput/protogenes.xlsx')
-dataTable <- read.xlsx('data.noprobpgs.xlsx')
-dt2 <- read.xlsx('data.noorfxm.xlsx')
-
+dataTable <- read.xlsx('2-7-19_296_youngorfs_inbarflex_omer.xlsx')
+dt2 <- read.xlsx('../data.noorfxm.xlsx')
+dataTable <- dataTable[dataTable$ORF.Name%in%ppp,]
+dt2  <- dt2[dt2$ORF.Name%in%ppp,]
 #dt2 <- dt2[(dt2$ORF.Name=='YER175W-A' | dt2$ORF.Name=='YAL037C-A')==F,]
 #dataTable <- rbind(dataTable,dt2)
-geneDataTable<-read.xlsx('data/clusteringInput/genes.xlsx')
+geneDataTable<-read.xlsx('../data/clusteringInput/genes.xlsx')
+nonGeneDataTable <- read.xlsx('../data/clusteringInput/nongenes.xlsx')
+geneDataTable <- sample_n(geneDataTable,100)
+overlappingNongenes <- read.csv('~/Main/anne/overlappingNongenes.csv')
+overlappingNongenes <- overlappingNongenes$x
+nonGeneDataTable <- nonGeneDataTable[is.na(nonGeneDataTable$ORF.Name)==F & nonGeneDataTable$ORF.Name%in%overlappingNongenes==F & nonGeneDataTable$Length.of.ORF>=83,]
+nonGeneDataTable <- sample_n(nonGeneDataTable,100)
+
 colNames<-c("Orf Name","ORF AA Length", #" ORF DNA Length",
             "Is there overlapping ORF in Para", "start codon in Para","stop codon in Para",
             "Para AA% Identitiy over Smorf Frame", "Para AA% Identitiy over Para Frame", "Para length Ratio",
@@ -40,12 +49,12 @@ colNames<-c("Orf Name","ORF AA Length", #" ORF DNA Length",
             "Kud AA% Identitiy over Smorf Frame", "Kud AA% Identitiy over Kud Frame", "Kud length Ratio",
             "Macse start codon in Kud",'Macse stop codon in Kud','Macse Kud Similarity','FrameShifting indels Kud' ,"Kud DNA similarity",'Macse Kud overlap Identity', 'Is gene?')
 
-clDT<-data.frame(matrix(ncol = length(colNames), nrow = (nrow(dataTable)+nrow(geneDataTable)+nrow(dt2))))
+clDT<-data.frame(matrix(ncol = length(colNames), nrow = (nrow(dataTable))))#+nrow(geneDataTable)+nrow(dt2)+nrow(nonGeneDataTable))))
 
 colnames(clDT)<-colNames
 i_<-1
 dataTable <- dt2
-
+dataTable <- nonGeneDataTable
 for (i in 1:nrow(dataTable)){
   clDT$`Orf Name`[i_]<-dataTable$ORF.Name[i]
   clDT$`ORF AA Length`[i_]<-dataTable$Length.of.Amino.Acid.Sequence.ORF[i]
@@ -95,7 +104,7 @@ for (i in 1:nrow(dataTable)){
   clDT$`Macse start codon in Kud`[i_]<-dataTable$`What.is.the.Start.Codon.in.Kud.with.Macse?`[i]
   clDT$`Macse stop codon in Bay`[i_]<-dataTable$`What.is.the.Stop.Codon.in.Bay.with.Macse?`[i]
   clDT$`Macse stop codon in Kud`[i_]<-dataTable$`What.is.the.Stop.Codon.in.Kud.with.Macse?`[i]
-  clDT$`Is gene?`[i_]<-1
+  clDT$`Is gene?`[i_]<-3
   clDT$`Macse Bay Similarity`[i_]<-dataTable$`Bay.%.Amino.Acid.over.smorf.with.Macse`[i]
   clDT$`Macse Kud Similarity`[i_]<-dataTable$`Kud.%.Amino.Acid.over.smorf.with.Macse`[i]
   clDT$`FrameShifting indels Bay`[i_]<-dataTable$Bay.Number.of.FrameShifts[i]
@@ -190,7 +199,7 @@ P$`FrameShifting indels Para`<-normalize((P$`FrameShifting indels Para`/paraLeng
 P$`FrameShifting indels Mik`<-normalize((P$`FrameShifting indels Mik`/mikLength),method = 'range',range = c(0,1))
 P$`FrameShifting indels Bay`<-normalize((P$`FrameShifting indels Bay`/bayLength),method = 'range',range = c(0,1))
 P$`FrameShifting indels Kud`<-normalize((P$`FrameShifting indels Kud`/kudLength),method = 'range',range = c(0,1))
-P <-P[(P$`Orf Name`=='YHR125W' | P$`Orf Name`=='YGL052')==F,]
+P <-P[(P$`Orf Name`=='YHR125W' | P$`Orf Name`=='YGL052' | P$`Orf Name`=='YBR131W')==F,]
 P <-P[P$`Orf Name`%in%t==F,]
 P[P=="N/A"]<-0 #make "N/A" cells =0
 P[is.na(P)]<-0 #make value error cells = 0
@@ -203,16 +212,16 @@ P[which(P$`Bay DNA similarity`<0.5), (grep('Bay',colnames(P),ignore.case = TRUE)
 #change column names####
 pcolNames<-c("Orf Name","ORF AA Length", #" ORF DNA Length",
              "Is there overlapping ORF in Para", "start codon in Para","stop codon in Para",
-             "Para AA% Identitiy over Smorf Frame", "Para overlap AA% Identitiy", "Log(Para length Ratio)",
+             "Para AA% Identitiy over Smorf Frame", "Para overlap AA% Identitiy", "(Para length Ratio)",
              "Macse start codon in Para",'Macse stop codon in Para','Macse Para Similarity','FrameShifting indels Para',"Para DNA similarity",'Macse Para overlap Identity',
              "Is there overlapping ORF in Mik", "start codon in Mik","stop codon in Mik",
-             "Mik AA% Identitiy over Smorf Frame", "Mik overlap AA% Identitiy", "Log(Mik length Ratio)",
+             "Mik AA% Identitiy over Smorf Frame", "Mik overlap AA% Identitiy", "(Mik length Ratio)",
              "Macse start codon in Mik",'Macse stop codon in Mik','Macse Mik Similarity','FrameShifting indels Mik' ,"Mik DNA similarity", 'Macse Mik overlap Identity',
              "Is there overlapping ORF in Bay", "start codon in Bay","stop codon in Bay",
-             "Bay AA% Identitiy over Smorf Frame", "Bay overlap AA% Identitiy", "Log(Bay length Ratio)",
+             "Bay AA% Identitiy over Smorf Frame", "Bay overlap AA% Identitiy", "(Bay length Ratio)",
              "Macse start codon in Bay",'Macse stop codon in Bay','Macse Bay Similarity','FrameShifting indels Bay' ,"Bay DNA similarity", 'Macse Bay overlap Identity',
              "Is there overlapping ORF in Kud", "start codon in Kud","stop codon in Kud",
-             "Kud AA% Identitiy over Smorf Frame", "Kud overlap AA% Identitiy", "Log(Kud length Ratio)",
+             "Kud AA% Identitiy over Smorf Frame", "Kud overlap AA% Identitiy", "(Kud length Ratio)",
              "Macse start codon in Kud",'Macse stop codon in Kud','Macse Kud Similarity','FrameShifting indels Kud' ,"Kud DNA similarity", 'Macse Kud overlap Identity',
              'Is gene?')
 colnames(P)<-pcolNames
@@ -232,28 +241,32 @@ col_order <- c(#"ORF AA Length", #" ORF DNA Length",
   #"Mik AA% Identitiy over Smorf Frame",
   "Mik overlap AA% Identitiy", #'Macse Mik Similarity','Macse Mik overlap Identity',
   #"Kud AA% Identitiy over Smorf Frame",
-  "Kud overlap AA% Identitiy",#'Macse Kud Similarity','Macse Kud overlap Identity',
+  "Kud overlap AA% Identitiy",#'Macse Kud Similarity','Macse Kud ovRplot02erlap Identity',
 
   #"Bay AA% Identitiy over Smorf Frame",
   "Bay overlap AA% Identitiy",#'Macse Bay Similarity','Macse Bay overlap Identity',
-  "Log(Para length Ratio)" ,"Log(Mik length Ratio)" ,"Log(Kud length Ratio)", "Log(Bay length Ratio)" ,
+  "(Para length Ratio)" ,"(Mik length Ratio)" ,"(Kud length Ratio)", "(Bay length Ratio)" ,
 
   "Para DNA similarity","Mik DNA similarity","Kud DNA similarity","Bay DNA similarity"
 )
 
 #subset the dataframe####
 #take subset of data excluding (last column, 'is gene?') , (first 2 columns "Orf Name","ORF AA Length")
+
+P <-unique(P,by=P$`Orf Name`)
 P_matrix <- (P[,3:(ncol(P)-1)])
+
 row.names(P_matrix)<-P$`Orf Name`
 
 #remove the protogenes that are not in the pccfiltered file from P_matrix
-mustfiltered<-pgs_nodes$orf_name[pgs_nodes$orf_name%in%pccFiltered$orf_name==FALSE]
-P_matrix<-P_matrix[which(rownames(P_matrix)%in%mustfiltered==FALSE),]
+#mustfiltered<-pgs_nodes$orf_name[pgs_nodes$orf_name%in%pccFiltered$orf_name==FALSE]
+#P_matrix<-P_matrix[which(rownames(P_matrix)%in%mustfiltered==FALSE),]
 P_matrix<-P_matrix[,col_order]
 #colnames(P_matrix)[37:40]<-c('Para length Ratio','Mik length Ratio', 'Kud length Ratio','Bay length Ratio') #to remove'Log' from Log(* length ratio) column names if no log operation applied
-P_matrix<-P_matrix[,-grep('Macse start codon',colnames(P_matrix))]
-P_matrix<-P_matrix[,-grep('Macse stop codon',colnames(P_matrix))]
-P_matrix<-P_matrix[,-grep('overlap Identity',colnames(P_matrix))]
+
+#P_matrix<-P_matrix[,-grep('Macse start codon',colnames(P_matrix))]
+#P_matrix<-P_matrix[,-grep('Macse stop codon',colnames(P_matrix))]
+#P_matrix<-P_matrix[,-grep('overlap Identity',colnames(P_matrix))]
 
 
 #create color palette####
@@ -310,9 +323,9 @@ P_matrix1$`stop codon in Kud`[P_matrix1$`stop codon in Kud`=='X']<-1
 
 #to rotate the dendrogram. see ?click_rotate
 dend1_<-click_rotate(dend1_)
-gene_col<-ifelse(rownames(P_matrix)%in%ppp,'brown',ifelse(rownames(P_matrix)%in%geneDataTable$ORF.Name,'white','slategray2'))
+gene_col<-ifelse(rownames(P_matrix)%in%ppp,'lightblue',ifelse(P$`Is gene`==3,'blue','white'))
 
-pdf('data/plots/heatmap1.pdf',width=16,height=12)
+pdf('../data/plots/heatmap_withnongene.pdf',width=16,height=12)
 out<-heatmap.2(data.matrix(P_matrix1),
                #cellnote = mat_data,  # same data set for cell labels
                #main = "agnes, manhattan", # heat map title
@@ -327,7 +340,7 @@ out<-heatmap.2(data.matrix(P_matrix1),
                srtCol = 45,
                dendrogram="row",     # only draw a row dendrogram
                Rowv=dend1_,#sort(rotate.dendrogram1(dend1_,groups)),#,type = "average"),
-               RowSideColors=matrix(gene_col),
+              # RowSideColors=matrix(gene_col),
                Colv=FALSE,
                cexRow = 0.09,
                #rowsep = c(531),
@@ -345,6 +358,7 @@ conserved2<-rownames(P_matrix1[as.numeric(labels(dend1_[[2]][[1]])),])[rownames(
 
 t<-rownames(P_matrix1[as.numeric(labels(dend1_[[2]][[1]])),])[rownames(P_matrix1[as.numeric(labels(dend1_[[2]][[1]])),])%in%geneDataTable$ORF.Name]
 #[1] "YLR390W" "YAL059W" "YGR084C" "YBR069C" "YER019W" "YBR194W"
+t <- c("YLR390W", "YAL059W" ,"YGR084C" ,"YBR069C" ,"YER019W" ,"YBR194W",'YBR243C')
 
 #only protogenes clustering####
 P_matrix2<-P_matrix[which(rownames(P_matrix)%in%pgs_nodes$orf_name),]

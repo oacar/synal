@@ -4,10 +4,10 @@
 \alias{findCodon}
 \title{find Codon
 Searches for start or stop codons
-For start codon search the input sequence should end right before the position where it alignes with start codon of proto-gene ORF 
+For start codon search the input sequence should end right before the position where it alignes with start codon of proto-gene ORF
 For stop codon search the input sequence should start from the position where it alignes with start codon of proto-gene ORF so for actual position on the DNA alignment (that start - 1 ) should be added the returned value}
 \usage{
-findCodon(sequence, codonSet)
+findCodon(sequence, codonSet, l = -1)
 }
 \arguments{
 \item{sequence}{DNAString object}
@@ -20,7 +20,7 @@ index of the A for start codon or index of last letter of stop codon for stop co
 \description{
 find Codon
 Searches for start or stop codons
-For start codon search the input sequence should end right before the position where it alignes with start codon of proto-gene ORF 
+For start codon search the input sequence should end right before the position where it alignes with start codon of proto-gene ORF
 For stop codon search the input sequence should start from the position where it alignes with start codon of proto-gene ORF so for actual position on the DNA alignment (that start - 1 ) should be added the returned value
 }
 \seealso{

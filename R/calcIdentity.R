@@ -3,15 +3,16 @@
 #'Only %ID between Scer and other sequences are calculated
 #'Gaps are treated as difference if one sequence has gap and other does not. If both sequence have gap in the same position it will not be count as similarity
 #'@param alignment DNAStringSet or AAStringSet object of alignments
+#'@param percent boolean for calculating percent ID or number of identical columns
 #'@return nx1 matrix with with %IDs
 
 #'@export
 
-calcIdentity<-function(alignment){
+calcIdentity<-function(alignment,percent=T){
   #this identity does not exclude gaps !!!!!!!
   #calculate identity matrix with percentage
   counts<-c()
-  
+
   for(i in 2:length(alignment)){
     c<-0
     for(j in 1:length(alignment[[1]])){
@@ -23,6 +24,10 @@ calcIdentity<-function(alignment){
   }
   Ref<-nchar(turnWoGaps(alignment[[1]]))
   counts<-c(Ref,counts)
-  identity_percentage<-as.matrix((counts)/Ref)
-  return(identity_percentage)
+  if(percent){
+    id<-as.matrix((counts)/Ref)
+  }else{
+    id <- as.matrix(counts)
+  }
+  return(id)
 }

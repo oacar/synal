@@ -6,10 +6,12 @@
 Only %ID between Scer and other sequences are calculated
 Gaps are treated as difference if one sequence has gap and other does not. If both sequence have gap in the same position it will not be count as similarity}
 \usage{
-calcIdentity(alignment)
+calcIdentity(alignment, percent = T)
 }
 \arguments{
 \item{alignment}{DNAStringSet or AAStringSet object of alignments}
+
+\item{percent}{boolean for calculating percent ID or number of identical columns}
 }
 \value{
 nx1 matrix with with %IDs

@@ -1,10 +1,13 @@
-#'
+#'Finds all overlapping ORFs
 #'@param dna DNA sequence that will be searched for finding ORFs
 #'@param range the range of interest. Only ORF ranges overlapping with this range will be considered
 #'@return IRanges object with start and end positions determined using \code{dna} object
 #'@export
 findOverlappingOrfs <- function(dna,range) {
   startpositions <- str_locate_all(as.character(dna),'A[-]*T[-]*G')[[1]]
+  if(length(startpositions)==0){
+    return(NA)
+  }
   stoppositions <- str_locate_all(as.character(dna),'T[-]*A[-]*A|T[-]*A[-]*G|T[-]*G[-]*A')[[1]]
   ranges <- IRanges()
   for(i in startpositions[,1]){
@@ -25,5 +28,6 @@ findOverlappingOrfs <- function(dna,range) {
     }
   }
   ranges <- ranges[ranges%over%range]
+  ranges <- ranges[width(overlapsRanges(ranges,range))>12]
   ranges
 }

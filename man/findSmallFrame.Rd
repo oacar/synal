@@ -5,22 +5,21 @@
 \title{Find small ORF frame
 Finds the ORF region over the other species if there is a smaller ORF, or just returns the overlapping parts of the Scer and the Other species' ORF}
 \usage{
-findSmallFrame(aaAlignment, whichSeq, seqAA.alignment = NULL,
-  overlap = F)
+findSmallFrame(aaAlignment, fourCodons, seqAA.alignment = NULL,
+  overlap = F, longer = F)
 }
 \arguments{
 \item{aaAlignment}{aligned AAStringSet object}
 
-\item{whichSeq}{string spesifying the other species name. c('Para','Mik', 'Bay', 'Kud') are acceptable}
+\item{seqAA.alignment}{if trying to find overlapping region when there is ....X......M..... situation where X comes before M, this will be used and is the AAString instance for that frame AA}
 
-\item{aaAlignment}{aligned AAStringSet object}
+\item{overlap}{is false by default. Used only in \code{findBestOverlap} to distinguish with normal usage of function. When this is true, and seqAA.alignment is needed, it will only return the overlapping region from start of sequence to X codon}
+
+\item{longer}{is false by default. Used only in \code{findBestOverlap} for now. It is to distinguish actual start codon with other start codons in the overlapping region to find correct overlap. It is TRUE if the sequence contains real start codon of proto-gene. False if not}
 
 \item{whichSeq}{string spesifying the other species name. c('Para','Mik', 'Bay', 'Kud') are acceptable}
 }
 \value{
-small orf alignment or overlapping region of alignment
-returns FALSE if alignment causes an error. Should be checked on main script properly
-
 small orf alignment or overlapping region of alignment
 returns FALSE if alignment causes an error. Should be checked on main script properly
 }

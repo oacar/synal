@@ -11,11 +11,9 @@ aaTranslation <-function(subalign, DNAStr){
     s_wogaps=''
     DNA_wogaps<-DNAStringSet()
     for(i in 1:length(subalign)){
-      for (j in 1:length(subalign[[i]])){
-        if(as.character(subalign[[i]][j])!='-'){
-          s_wogaps=paste(s_wogaps, as.character(subalign[[i]][j]), sep = '')
-        }
-      }
+        s_wogaps=turnWoGaps(subalign[[i]])
+
+
       DNA_wogaps<-append(DNA_wogaps, DNAStringSet(s_wogaps))
       s_wogaps=''
     }

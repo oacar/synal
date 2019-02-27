@@ -4,22 +4,14 @@
 #'@param whichSeq string spesifying the other species name. c('Para','Mik', 'Bay', 'Kud') are acceptable
 #'@param seqAA.alignment if trying to find overlapping region when there is ....X......M..... situation where X comes before M, this will be used and is the AAString instance for that frame AA
 #'@param overlap is false by default. Used only in \code{findBestOverlap} to distinguish with normal usage of function. When this is true, and seqAA.alignment is needed, it will only return the overlapping region from start of sequence to X codon
-<<<<<<< HEAD
 #'@param longer is false by default. Used only in \code{findBestOverlap} for now. It is to distinguish actual start codon with other start codons in the overlapping region to find correct overlap. It is TRUE if the sequence contains real start codon of proto-gene. False if not
-=======
-#'@param longer is false by default. Used only in \code{findBestOverlap} for now. It is to distinguish actual start codon with other start codons in the overlapping region to find correct overlap
->>>>>>> c1655aa13be547d7cec4b70c6fa5291cc3ca1da2
 #'@return small orf alignment or overlapping region of alignment
 #' returns FALSE if alignment causes an error. Should be checked on main script properly
 #' @import Biostrings
 #' @import muscle
 #'@export
 
-<<<<<<< HEAD
 findSmallFrame <- function(aaAlignment, fourCodons, seqAA.alignment=NULL,overlap=F,longer=F) {
-=======
-findSmallFrame <- function(aaAlignment, whichSeq, seqAA.alignment=NULL,overlap=F,longer=F) {
->>>>>>> c1655aa13be547d7cec4b70c6fa5291cc3ca1da2
   out<-tryCatch(
     {
       # id<--1
@@ -44,7 +36,6 @@ findSmallFrame <- function(aaAlignment, whichSeq, seqAA.alignment=NULL,overlap=F
       ##to calculate identity over overlapping region of scer and para\mik orfs,
       ##this function now returns the only the part overlaps with scer orf
       orf<-checkORF(aaAlignment[[id]])
-<<<<<<< HEAD
       if(longer){
         #coors<-findORF(aaAlignment[[id]])
         startPos<-str_locate(aaAlignment[[2]],as.character(fourCodons))[1,1]#ifelse(longer,coors[[1]],1)
@@ -54,12 +45,6 @@ findSmallFrame <- function(aaAlignment, whichSeq, seqAA.alignment=NULL,overlap=F
                         ifelse(xpos<startPos,
                                ifelse(nrow(str_locate_all(aaAlignment[[2]],'X')[[1]])==2,
                                       ifelse(str_locate_all(aaAlignment[[2]],'X')[[1]][2,1]<xpos2,str_locate_all(aaAlignment[[2]],'X')[[1]][2,1],xpos2),length(aaAlignment[[1]])),xpos))
-=======
-      if(orf==TRUE){
-        coors<-findORF(aaAlignment[[id]])
-        startPos<-ifelse(longer,coors[[1]],1)
-        stopPos<-coors[[2]]
->>>>>>> c1655aa13be547d7cec4b70c6fa5291cc3ca1da2
 
         if(startPos==-1 || stopPos==-1){
           return(FALSE)
@@ -91,81 +76,6 @@ findSmallFrame <- function(aaAlignment, whichSeq, seqAA.alignment=NULL,overlap=F
 
       }
     },
-=======
-        startPos<-ifelse(longer,checkCodon(aaSmall[[id]],'M'),1)
-        # if(startPos==-1){
-        #   startPos<-checkCodon(aaSmall[[id]],'I')
-        # }
-        stopPos<-checkCodon(aaSmall[[id]],'X')
-        aaSmall<-subseq(aaSmall,startPos, stopPos)
-        aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
-        return(aaSmall)
-      }else{
-        if(orf=="BOTH"){
-          return(aaAlignment)
-        }else if(orf=="M"){
-          startPos<-1
-          stopPos<-checkCodon(aaAlignment[[id]],'X')
-
-          aaSmall<-subseq(aaAlignment,startPos, stopPos)
-          aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
-
-          stopPos<-checkCodon(aaSmall[[id]],'X')
-          aaSmall<-subseq(aaSmall,startPos, stopPos)
-          aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
-          return(aaSmall)
-        }else if(orf=="X"){
-          startPos<-checkCodon(aaAlignment[[id]],'M')
-          # if(startPos==-1){
-          #   startPos<-checkCodon(aaAlignment[[id]],'I')
-          # }
-          stopPos<-length(aaAlignment[[1]])
-
-          aaSmall<-subseq(aaAlignment,startPos, stopPos)
-          aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
-          startPos<-checkCodon(aaSmall[[id]],'M')
-          # if(startPos==-1){
-          #   startPos<-checkCodon(aaSmall[[id]],'I')
-          # }
-          stopPos<-length(aaSmall[[1]])
-          aaSmall<-subseq(aaSmall,startPos, stopPos)
-          aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
-          return(aaSmall)
-        }else if(orf=="Neither"){
-          if(is.null(seqAA.alignment)==F){
-            if(as.character(seqAA.alignment[1])=='M' | overlap){
-              startPos<-1
-              stopPos<-checkCodon(aaAlignment[[id]],'X')
-
-              aaSmall<-subseq(aaAlignment,startPos, stopPos)
-              aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
-
-              stopPos<-checkCodon(aaSmall[[id]],'X')
-              aaSmall<-subseq(aaSmall,startPos, stopPos)
-              aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
-              return(aaSmall)
-            }else{
-              startPos<-checkCodon(aaAlignment[[id]],'M')
-              # if(startPos==-1){
-              #   startPos<-checkCodon(aaAlignment[[id]],'I')
-              # }
-              stopPos<-length(aaAlignment[[1]])
-
-              aaSmall<-subseq(aaAlignment,startPos, stopPos)
-              aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
-              startPos<-checkCodon(aaSmall[[id]],'M')
-              # if(startPos==-1){
-              #   startPos<-checkCodon(aaSmall[[id]],'I')
-              # }
-              stopPos<-length(aaSmall[[1]])
-              aaSmall<-subseq(aaSmall,startPos, stopPos)
-              aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
-              return(aaSmall)
-            }
-          }else{return(FALSE)}
-        }else{return(FALSE)}
-      }},
->>>>>>> c1655aa13be547d7cec4b70c6fa5291cc3ca1da2
     error=function(cond){
       message('No region on one of sequence found!')
       return(FALSE)

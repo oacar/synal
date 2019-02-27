@@ -51,7 +51,6 @@ findSmallFrame <- function(aaAlignment, fourCodons, seqAA.alignment=NULL,overlap
         }
         aaSmall<-subseq(aaAlignment,startPos, stopPos)
         aaSmall<-AAStringSet(muscle(aaSmall,quiet = T))
-<<<<<<< HEAD
         # startPos<-ifelse(longer,checkCodon(aaSmall[[id]],'M'),1)
         # # if(startPos==-1){
         # #   startPos<-checkCodon(aaSmall[[id]],'I')

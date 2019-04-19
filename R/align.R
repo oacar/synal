@@ -1,12 +1,13 @@
 #'Gets DNAStringSet aligns it
-#'@param mySequences DNAStringSet with all sequences (including the ORF to be searched) in it
+#'@param mySequences DNAStringSet with all sequences in it
 #'@param orfName ORF identifier name that will be used for file writing
 #'@param path path for files to be written in
+#'@param ygeneSeq sequence of ORF of interest. If not given, last sequence of {mySequences} considered to be ygeneSeq
 #'@return aligned DNAStringset, start and stop positions of orfName on DNAStringSet and AA alignment of the orfName sequence with other species
 #'@export
 
 
-align <- function(mySequences, orfName, path) {
+align <- function(mySequences, orfName, path,ygeneSeq=NULL) {
 
 
   dnaAlignmentList<-suppressWarnings(tryCatch({alignWoSmorf(mySequences,algorithm = 'Muscle',ygeneSeq)},

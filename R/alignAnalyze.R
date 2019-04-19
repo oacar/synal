@@ -14,7 +14,7 @@ alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory,specName
   cl <- makeCluster(6)
   registerDoParallel(cl)
 
-  #ygeneSeq <-  findYGeneSeq('../../alignment/scer/orf_genomic_all.fasta',orfName,outputPath = NULL)
+  ygeneSeq <-  findYGeneSeq(orfName)
 
   #Input check----------
   #checkInput<-file.exists(filename)
@@ -34,7 +34,7 @@ alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory,specName
 
 
   #Alignment--------
-  dnalist <- align(mySequences,orfName, path)
+  dnalist <- align(mySequences,orfName, path, ygeneSeq)
   DNAStr <- dnalist$dnaAlignmentList[[1]]
   start <- dnalist$dnaAlignmentList[[2]]
   stop <- dnalist$dnaAlignmentList[[3]]

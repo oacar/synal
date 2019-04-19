@@ -8,24 +8,24 @@
 findYGeneSeq<- function(geneName,outputPath=NULL){
 
   #allnames <- scerAnnotatedSequences%>%names%>%str_split(',')%>%lapply('[',1)%>%str_split('[ ]+')%>%lapply('[',1)
-  index <- which(scerAnnotatedSequences$orf_name%>%str_detect(geneName))
+  seq <- tryCatch({scerAnnotatedSequences[[geneName]]}, error = function(e){NULL})
 
 
-  if(index==0){
+  if(is.null(seq)){
 
     warning(paste(geneName, 'cannot be found ', sep=" "))
 
   }else{
-    Seq<-scerAnnotatedSequences[index,]$sequence%>%DNAStringSet()
-    names(Seq) <- geneName
+    seq<-seq%>%DNAStringSet()
+    names(seq) <- geneName
 
   if(is.null(outputPath)){
-    return(Seq)
+    return(seq)
   }else{
     fileName<-paste0(outputPath,'/',geneName,'_sequence.fa')
-    writeXStringSet(Seq, fileName)
+    writeXStringSet(seq, fileName)
   }
 
-  return(Seq)
+  return(seq)
   }
 }

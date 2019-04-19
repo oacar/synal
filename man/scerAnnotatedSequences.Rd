@@ -4,7 +4,7 @@
 \name{scerAnnotatedSequences}
 \alias{scerAnnotatedSequences}
 \title{Saccharomyces Cerevisiae annotated sequence data}
-\format{data frame with systematic orf names and sequences}
+\format{named vector with systematic orf names and sequences}
 \source{
 \href{https://www.yeastgenome.org/downloads}{SGD}
 }

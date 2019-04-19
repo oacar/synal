@@ -6,7 +6,7 @@
 #'
 #' @usage data(scerAnnotatedSequences)
 #'
-#' @format data frame with systematic orf names and sequences
+#' @format named vector with systematic orf names and sequences
 #'
 #' @keywords datasets
 #'

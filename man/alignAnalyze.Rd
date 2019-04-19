@@ -16,10 +16,17 @@ alignAnalyze(filename, orfName, annotated = T, outputDirectory,
 
 \item{outputDirectory}{directory to save alignment output}
 
+<<<<<<< HEAD
 \item{specNames}{species names given by user provided tree. it is needed for correct output names and analysis}
 
 \item{...}{placeholder for sequence file names}
 }
 \description{
 This will be THE function for alignment-analysis output
+=======
+\item{...}{placeholder for sequence file names}
+}
+\description{
+This will be the function for alignment-analysis output
+>>>>>>> 148476c140b1b99b5faa0856ac47ec854c8eaa4f
 }

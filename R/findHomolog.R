@@ -15,6 +15,7 @@ findHomolog <- function(DNAStr, aa_alignment, start, stop, ygeneSeq, types, path
     r=400
     r=ifelse(start<r,start-1,r)
     bo <- findBestOverlap(DNAStr, j, r, start, stop, ygeneSeq, types)
+
     if(is.null(bo)==F){
       writeXStringSet(bo$dna, file=paste(paste(path,orfName, sep="/"),"_subalignment_",types[j],".fa",sep = ""))
       writeXStringSet(bo$aa,file=paste(paste(path,orfName, sep="/"),"_AATranslation_",types[j],".fa",sep = ""))

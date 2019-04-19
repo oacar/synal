@@ -24,7 +24,6 @@ analyze <- function(path,orfName,types) {
     colNames <- append(colNames,cn)
   }
 
-
   dataTable<-data.frame(matrix(ncol = length(colNames), nrow = 1))#length(list.files(p_))))
   colnames(dataTable)<-colNames
 
@@ -35,6 +34,7 @@ analyze <- function(path,orfName,types) {
   aa<-readAAStringSet(paste(path,'/',orfName,'_AATranslation.fa',sep = ''))
   rw=1
   dataTable$`ORF Name`[rw]<-orfName
+
   #If your alignment files do not have proto-gene sequence as last sequence, please append an arbitrary sequence to end, almost all functions assumes the last sequence is the proto-gene, thus makes calculations accordingly
   if(aa[1]!=aa[length(aa)]){#this number should be changed according to (number of aligned species+1) if above is the case
     aa<-append(aa,aa[1])
@@ -42,6 +42,7 @@ analyze <- function(path,orfName,types) {
   if(subalign[1]!=subalign[length(subalign)]){#this number should be changed according to (number of aligned species+1) if above is the case
     subalign<-append(subalign,subalign[1])
   }
+
 
   startDNA<-startCodon(subalign)
   startAA<-startCodon(aa)
@@ -104,6 +105,7 @@ analyze <- function(path,orfName,types) {
     dataTable[[paste("Is length of ORF same in ",name,"?",sep='')]][rw]<-dataTable$`Length of Amino Acid Sequence ORF`[rw]==dataTable[[paste("Length of ",name," Amino Acid Start to Finish without Gaps",sep='')]][rw]
 
   }
+
 
   return(dataTable)
 }

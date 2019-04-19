@@ -32,6 +32,7 @@ alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory,specName
   vec<-speciesVector(names(mySequences),specNames)
 
 
+
   #Alignment--------
   dnalist <- align(mySequences,orfName, path)
   DNAStr <- dnalist$dnaAlignmentList[[1]]
@@ -47,6 +48,7 @@ alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory,specName
   findHomolog(DNAStr, aa_alignment, start, stop, ygeneSeq, types, path, orfName)
 
   dataTable <- analyze(path,orfName,types)
+
 }
 
 

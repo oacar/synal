@@ -8,6 +8,7 @@
 
 align <- function(mySequences, orfName, path) {
 
+
   dnaAlignmentList<-suppressWarnings(tryCatch({alignWoSmorf(mySequences,algorithm = 'Muscle',ygeneSeq)},
                                               error=function(cond){
                                                 stop(paste('Alignment function gives error for',orfName, 'please make sure you are giving correct input'))
@@ -35,6 +36,7 @@ align <- function(mySequences, orfName, path) {
   if(is.logical(aa_alignment)){
     stop(paste("One of the sequences does not have any nucleotide in the aligned region for ",orfName,sep = ''))
   }
+
   writeXStringSet(aa_alignment,file=paste(paste(path,orfName, sep="/"),"AATranslation.fa",sep = "_"))
 
   list(dnaAlignmentList=dnaAlignmentList,aa_alignment=aa_alignment)

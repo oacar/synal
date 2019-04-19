@@ -2,9 +2,10 @@
 % Please edit documentation in R/alignAnalyze.R
 \name{alignAnalyze}
 \alias{alignAnalyze}
-\title{This will be the function for alignment-analysis output}
+\title{This will be THE function for alignment-analysis output}
 \usage{
-alignAnalyze(filename, orfName, annotated = T, outputDirectory, ...)
+alignAnalyze(filename, orfName, annotated = T, outputDirectory,
+  specNames, ...)
 }
 \arguments{
 \item{filename}{alignment file name or directory name}
@@ -15,8 +16,10 @@ alignAnalyze(filename, orfName, annotated = T, outputDirectory, ...)
 
 \item{outputDirectory}{directory to save alignment output}
 
+\item{specNames}{species names given by user provided tree. it is needed for correct output names and analysis}
+
 \item{...}{placeholder for sequence file names}
 }
 \description{
-This will be the function for alignment-analysis output
+This will be THE function for alignment-analysis output
 }

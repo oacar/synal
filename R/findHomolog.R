@@ -12,22 +12,9 @@
 
 findHomolog <- function(DNAStr, aa_alignment, start, stop, ygeneSeq, types, path, orfName) {
   for(j in 2:(length(DNAStr))){
-    #registerDoParallel(cl)
-
-    #PrevStart<-start
-    #NextStop<-stop
-    #CheckOrf<-checkORF(aa_alignment[[j]])
-    if(as.character(aa_alignment[[j]][1])=='M'){
-      r=0
-      u=200
-      bo <- findBestOverlap(DNAStr, j, r, start, stop, ygeneSeq, types,u)
-
-    }else{
-      r=200
-      r=ifelse(start<r,start-1,r)
-      bo <- findBestOverlap(DNAStr, j, r, start, stop, ygeneSeq, types)
-
-    }
+    r=400
+    r=ifelse(start<r,start-1,r)
+    bo <- findBestOverlap(DNAStr, j, r, start, stop, ygeneSeq, types)
     if(is.null(bo)==F){
       writeXStringSet(bo$dna, file=paste(paste(path,orfName, sep="/"),"_subalignment_",types[j],".fa",sep = ""))
       writeXStringSet(bo$aa,file=paste(paste(path,orfName, sep="/"),"_AATranslation_",types[j],".fa",sep = ""))

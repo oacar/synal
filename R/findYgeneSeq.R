@@ -1,27 +1,28 @@
 #'Finds annotated ORF sequence from annotated sequence file downloaded from SGD
 #'@param orfName annotated orf Y----- name
+#'@param outputPath path if orfName sequence will be asked to written as separate file
 #'@return sequence of given orf name as DNAString instance
 #'@export
 
 
-findYGeneSeq<- function(geneName){
-  for (i in 1:length(scerAnnotatedSequences)){
-    if(geneName ==  strsplit(strsplit(names(scerAnnotatedSequences)[i], ',')[[1]][1], ' ')[[1]][1]){
-      index<-i
-    }
-  }
+findYGeneSeq<- function(geneName,outputPath=NULL){
+
+  #allnames <- scerAnnotatedSequences%>%names%>%str_split(',')%>%lapply('[',1)%>%str_split('[ ]+')%>%lapply('[',1)
+  index <- which(scerAnnotatedSequences$orf_name%>%str_detect(geneName))
+
+
   if(index==0){
 
-    warning(sprintf("%s", paste(geneName, 'cannot be found ', sep=" ")))
+    warning(paste(geneName, 'cannot be found ', sep=" "))
 
-  }else{  Seq<-scerAnnotatedSequences[index]
+  }else{
+    Seq<-scerAnnotatedSequences[index,]$sequence%>%DNAStringSet()
+    names(Seq) <- geneName
 
   if(is.null(outputPath)){
     return(Seq)
   }else{
-    fileName<-sprintf("%s", paste(outputPath,geneName, sep="/"))
-    fileName<-sprintf("%s", paste(fileName,"sequence", sep="_"))
-    fileName<-sprintf("%s", paste(fileName,'.fa', sep=""))
+    fileName<-paste0(outputPath,'/',geneName,'_sequence.fa')
     writeXStringSet(Seq, fileName)
   }
 

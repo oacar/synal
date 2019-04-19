@@ -4,14 +4,14 @@
 \alias{analyze}
 \title{This function reads all output files previously created and analyzes the outputs}
 \usage{
-analyze(orfName, path, vec)
+analyze(path, orfName, types)
 }
 \arguments{
-\item{orfName}{orf identifier for the orf of interest}
-
 \item{path}{folder path for output files}
 
-\item{vec}{this is a vector to assess which sequences exists in this order scer,spar,smik,skud,sbay}
+\item{orfName}{orf identifier for the orf of interest}
+
+\item{types}{this is a vector to assess which sequences exists}
 }
 \description{
 This function reads all output files previously created and analyzes the outputs

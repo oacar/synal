@@ -3,13 +3,14 @@
 #'@param outputDirectory directory to save alignment output
 #'@param orfName identifier for ORF. SGD name if annotated
 #'@param annotated boolean shows if the given sequence is annotated or not
+#'@param specNames species names given by user provided tree. it is needed for correct output names and analysis
 #'@param ... placeholder for sequence file names
 #'
 #'
 #'@export
 
 
-alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory,...){
+alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory,specNames,...){
   cl <- makeCluster(6)
   registerDoParallel(cl)
 
@@ -28,24 +29,24 @@ alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory,...){
     stop("Filename is wrong. Make sure it is a directory or alignment file that exists")
   }
   #Input read------
-  vec<-speciesVector(names(mySequences))
+  vec<-speciesVector(names(mySequences),specNames)
 
 
   #Alignment--------
   dnalist <- align(mySequences,orfName, path)
-  DNAStr <- dnalist$dnaAlignmentList$DNAStr
-  start <- dnalist$dnaAlignmentList$stop
-  stop <- dnalist$dnaAlignmentList$stop
+  DNAStr <- dnalist$dnaAlignmentList[[1]]
+  start <- dnalist$dnaAlignmentList[[2]]
+  stop <- dnalist$dnaAlignmentList[[3]]
   aa_alignment <- dnalist$aa_alignment
 
   #overlapping orfs----------------
 
 
-  types<-c('scer','Spar','Smik','Skud','Sbay','Sarb')
+  types<-specNames#c('scer','Spar','Smik','Skud','Sbay','Sarb')
   types <- types[vec>0]
   findHomolog(DNAStr, aa_alignment, start, stop, ygeneSeq, types, path, orfName)
 
-  dataTable <- analyze(path,orfName,vec)
+  dataTable <- analyze(path,orfName,types)
 }
 
 

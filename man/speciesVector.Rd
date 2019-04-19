@@ -4,13 +4,15 @@
 \alias{speciesVector}
 \title{This function check a set of strings to create a species vector}
 \usage{
-speciesVector(input)
+speciesVector(input, specNames)
 }
 \arguments{
-\item{input}{a list of strings}
+\item{input}{a list of strings representing the species names in the input file}
+
+\item{specNames}{species names given by species tree input}
 }
 \value{
-a vector that represents whether following species exists in this order. Scer,Spar,Smik,Skud,Sbay,Sarb
+a vector that represents which specNames exists in the alignment file. DOES NOT CONSIDER THE ORDER
 }
 \description{
 This function check a set of strings to create a species vector

@@ -4,9 +4,11 @@
 \alias{findYGeneSeq}
 \title{Finds annotated ORF sequence from annotated sequence file downloaded from SGD}
 \usage{
-findYGeneSeq(geneName)
+findYGeneSeq(geneName, outputPath = NULL)
 }
 \arguments{
+\item{outputPath}{path if orfName sequence will be asked to written as separate file}
+
 \item{orfName}{annotated orf Y----- name}
 }
 \value{

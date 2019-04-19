@@ -36,11 +36,11 @@ source('exampleScripts/InputHelper.R')
 cl <- makeCluster(6)
 registerDoParallel(cl)
 #Collect and align those files
-p_ <- '../02-22/aaronblocks6/'
+p_ <- '../02-22/combined//'
 noaln <- 0
 interest <- list.files(p_)#read.csv('~/Downloads/2-5-19_364_youngorfs_inbarflex.csv',stringsAsFactors = F)
 interest <- sort(interest)#$orf_name)
-dirName <- 'YNL034W'
+dirName <- 'YNL269W'
 startitr=430
 for(kk in startitr:length(interest)){
   out <- tryCatch({
@@ -108,7 +108,7 @@ for(kk in startitr:length(interest)){
     }
 
     #mySequences[1] <- reverseComplement(mySequences[1])
-    dnaAlignmentList<-list(alignment,start, end)#suppressWarnings(tryCatch({alignWoSmorf(mySequences,algorithm = 'Muscle')},
+    dnaAlignmentList<-suppressWarnings(tryCatch({alignWoSmorf(mySequences,algorithm = 'Muscle')},
                                error=function(cond){
                                  alignWoSmorf(mySequences,algorithm = 'ClustalW')
                                }))
@@ -521,7 +521,7 @@ for(kk in startitr:length(interest)){
 
 
 
- write_delim(dataTable,path='../02-22/y-genes0222aaron.csv',append = T)
+ write_delim(dataTable,path='../anne/networkSynal/appendData.csv',append = T)
  }},error=function(cond){
    message(paste('Error for',dirName))
    return(FALSE)

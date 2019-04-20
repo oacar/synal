@@ -13,7 +13,6 @@
 
 alignWoSmorf <- function(sequenceSet, algorithm='Muscle',smorfSeq=NULL) {
 
-  ##Input: DNA Sequence set that was read from fasta files, not aligned set object
   ## requirement : at least 3 sequences
   l<-length(sequenceSet)
 
@@ -21,7 +20,7 @@ alignWoSmorf <- function(sequenceSet, algorithm='Muscle',smorfSeq=NULL) {
     stop("Sequence Set should have 3 or more sequences")
   }
   if(is.null(smorfSeq)){
-    sub<-sequenceSet[1:l-1] ##take first 3 sequences
+    sub<-sequenceSet[1:l-1] ##take first l-1 sequences
     reg<-regSeq(sequenceSet[[l]])
 
   }else{

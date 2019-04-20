@@ -9,7 +9,7 @@
 #'
 #'@return list of three elements
 #'@return dna = dna alignment of jth species orf with proto-gene, aa = aa alignment with full jth ORF, aaOverlap = overlapping regions of both ORFs
-#'
+#'@import IRanges
 #'@export
 
 findBestOverlap <- function(DNAStr, j, r,start, stop, ygeneSeq, types , k=NULL) {

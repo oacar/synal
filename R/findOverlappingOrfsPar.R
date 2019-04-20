@@ -4,6 +4,7 @@
 #'@return IRanges object with start and end positions determined using \code{dna} object
 #'@import foreach
 #'@import doParallel
+#'@import IRanges
 #'@export
 #'
 

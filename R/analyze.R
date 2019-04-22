@@ -1,12 +1,14 @@
 #'This function reads all output files previously created and analyzes the outputs
 #'@param orfName orf identifier for the orf of interest
-#'@param path folder path for output files
+#'@param path folder path for reading input files
 #'@param types this is a vector to assess which sequences exists
 #'@export
 
 analyze <- function(path,orfName,types) {
   #Analysis------------
-
+  if(dir.exists(path)==F){
+    stop(paste0(path, ' does not exist. Please check the input'))
+  }
 
 
   colNames<-c("ORF Name",	"Do all Start Codon Align?" ,"Do all Stop Codon Align","Length of ORF (DNA)","Length of Amino Acid Sequence ORF")

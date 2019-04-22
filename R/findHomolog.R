@@ -10,17 +10,22 @@
 #'@return nothing returns at the moment, all files are written in path with 3 files for each species. pairwise nucleotide alignment, pairwise AA alignment and pairwise AA alignment that shows only overlap of two ORFs
 #'@export
 
-findHomolog <- function(DNAStr, aa_alignment, start, stop, ygeneSeq, types, path, orfName) {
+findHomolog <- function(DNAStr, aa_alignment, start, stop, ygeneSeq, types, path=NULL, orfName) {
+  all <- list()
   for(j in 2:(length(DNAStr))){
     r=400
     r=ifelse(start<r,start-1,r)
     bo <- findBestOverlap(DNAStr, j, r, start, stop, ygeneSeq, types)
 
     if(is.null(bo)==F){
-      writeXStringSet(bo$dna, file=paste(paste(path,orfName, sep="/"),"_subalignment_",types[j],".fa",sep = ""))
-      writeXStringSet(bo$aa,file=paste(paste(path,orfName, sep="/"),"_AATranslation_",types[j],".fa",sep = ""))
-      writeXStringSet(bo$aaOverlap,file=paste(paste(path,orfName, sep="/"),"_AATranslation_overlap_",types[j],".fa",sep = ""))
-
+      if(is.null(path)==F){
+        writeXStringSet(bo$dna, file=paste(paste(path,orfName, sep="/"),"_subalignment_",types[j],".fa",sep = ""))
+        writeXStringSet(bo$aa,file=paste(paste(path,orfName, sep="/"),"_AATranslation_",types[j],".fa",sep = ""))
+        writeXStringSet(bo$aaOverlap,file=paste(paste(path,orfName, sep="/"),"_AATranslation_overlap_",types[j],".fa",sep = ""))
+      }else{
+        all[[types[j]]] <- bo
+      }
     }
   }
+  all
 }

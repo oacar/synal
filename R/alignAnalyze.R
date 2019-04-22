@@ -10,7 +10,7 @@
 #'@export
 
 
-alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory,specNames,...){
+alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory=NULL,specNames,...){
   cl <- makeCluster(6)
   registerDoParallel(cl)
 
@@ -20,11 +20,9 @@ alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory,specName
   #checkInput<-file.exists(filename)
   if(file_test("-f",filename)){
     mySequences<-readDNAStringSet(filename)
-    path<- outputDirectory#str_remove(filename,paste(orfName,'_alignment.fa',sep=''))
 
   }else if(file_test("-d",filename)){
     mySequences<-readFiles(filename)
-    path<-outputDirectory#filename
   }else{
     stop("Filename is wrong. Make sure it is a directory or alignment file that exists")
   }
@@ -34,7 +32,7 @@ alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory,specName
 
 
   #Alignment--------
-  dnalist <- align(mySequences,orfName, path, ygeneSeq)
+  dnalist <- align(mySequences,orfName, outputDirectory, ygeneSeq)
   DNAStr <- dnalist$dnaAlignmentList[[1]]
   start <- dnalist$dnaAlignmentList[[2]]
   stop <- dnalist$dnaAlignmentList[[3]]
@@ -45,9 +43,9 @@ alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory,specName
 
   types<-specNames#c('scer','Spar','Smik','Skud','Sbay','Sarb')
   types <- types[vec>0]
-  findHomolog(DNAStr, aa_alignment, start, stop, ygeneSeq, types, path, orfName)
+  homologs <- findHomolog(DNAStr, aa_alignment, start, stop, ygeneSeq, types, outputDirectory, orfName)
 
-  dataTable <- analyze(path,orfName,types)
+  dataTable <- analyze(outputDirectory,orfName,types)
 
 }
 

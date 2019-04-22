@@ -7,7 +7,7 @@
 #'@export
 
 
-align <- function(mySequences, orfName, path,ygeneSeq=NULL) {
+align <- function(mySequences, orfName, path=NULL,ygeneSeq=NULL) {
 
 
   dnaAlignmentList<-suppressWarnings(tryCatch({alignWoSmorf(mySequences,algorithm = 'Muscle',ygeneSeq)},
@@ -30,15 +30,18 @@ align <- function(mySequences, orfName, path,ygeneSeq=NULL) {
   }
 
 
-  writeXStringSet(subalign, file=paste(paste(path,orfName, sep="/"),"subalignment.fa",sep = "_"))
-
   #Aminoacid translation####
   aa_alignment<-aaTranslation(subalign,DNAStr)
   if(is.logical(aa_alignment)){
     stop(paste("One of the sequences does not have any nucleotide in the aligned region for ",orfName,sep = ''))
   }
 
-  writeXStringSet(aa_alignment,file=paste(paste(path,orfName, sep="/"),"AATranslation.fa",sep = "_"))
+  if(is.null(path)==F){
+    writeXStringSet(subalign, file=paste(paste(path,orfName, sep="/"),"subalignment.fa",sep = "_"))
+    writeXStringSet(aa_alignment,file=paste(paste(path,orfName, sep="/"),"AATranslation.fa",sep = "_"))
+
+  }
+
 
   list(dnaAlignmentList=dnaAlignmentList,aa_alignment=aa_alignment)
 }

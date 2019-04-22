@@ -10,24 +10,36 @@ findOverlappingOrfs <- function(dna,range) {
   }
   stoppositions <- str_locate_all(as.character(dna),'T[-]*A[-]*A|T[-]*A[-]*G|T[-]*G[-]*A')[[1]]
   ranges <- IRanges()
-  for(i in startpositions[,1]){
-    startpos <- i
-    for(j in 1:nrow(stoppositions)){
-      stoppos <- stoppositions[j,2]
-      if(stoppos>startpos){
-        seq <- turnWoGaps(subseq(dna,start = startpos,end=stoppos))
-        aatr <- suppressWarnings(translate(DNAString((seq))))
+  #
+  eg <- expand.grid(startpositions[,1],stoppositions[,2])
+  eg_list <- eg[eg[,1]<eg[,2],] #take start positions < stop positions only and create iranges object with those positions
+  eg_range <- IRanges(eg_list[,1],eg_list[,2])
+  eg_ranges <- eg_range[eg_range%over%range]
+  ranges <- IRanges()
+  for(i in 1:length(eg_ranges)){
+    startpos <- start(eg_ranges[i])
+    stoppos <- end(eg_ranges[i])
+    seq <- turnWoGaps(subseq(dna,start = startpos,end=stoppos))
+    aatr <- suppressWarnings(translate(DNAString((seq))))
 
-        if(alphabetFrequency(aatr)['*']>1){
-          next
-        }
-        if(nchar((seq))%%3==0 & any(end(ranges)[start(ranges)==startpos]<stoppos)==F & any(start(ranges)[end(ranges)==stoppos]<startpos)==F){
-          ranges <- append(ranges,IRanges(startpos,stoppositions[j,2]))
-        }
-      }
+    if(alphabetFrequency(aatr)['*']>1){
+      next
+    }
+    if(nchar((seq))%%3==0 & any(end(ranges)[start(ranges)==startpos]<stoppos)==F & any(start(ranges)[end(ranges)==stoppos]<startpos)==F){
+      ranges <- append(ranges,eg_ranges[i])
     }
   }
+
+
   ranges <- ranges[ranges%over%range]
   ranges <- ranges[width(overlapsRanges(ranges,range))>12]
-  ranges
+  newranges <- IRanges()
+  #from the ORFs that end at the same position, take the one started earlier.
+  for(i in 1:length(unique(end(ranges)))){
+    e <- unique(end(ranges))[i]
+    eth <- ranges[end(ranges)==e]
+    maxeth <- eth[which.max(width(eth))]
+    newranges <- append(newranges,maxeth)
+  }
+  newranges
 }

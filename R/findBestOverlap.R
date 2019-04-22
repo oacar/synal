@@ -14,18 +14,10 @@
 
 findBestOverlap <- function(DNAStr, j, r,start, stop, ygeneSeq, types , k=NULL) {
   k <- ifelse(is.null(k),r,k)
-  subseq <- subseq(DNAStr[[j]],start=ifelse(start-r<1,1,start-r),end=ifelse(stop+k<length(DNAStr[[j]]),stop+k,length(DNAStr[[j]])))
+  subseq <- DNAStr[[j]]#subseq(DNAStr[[j]],start=ifelse(start-r<1,1,start-r),end=ifelse(stop+k<length(DNAStr[[j]]),stop+k,length(DNAStr[[j]])))
   ranges <- findOverlappingOrfs(subseq,range = IRanges(r,stop-start+r))
   itr <- 0
-  if(length(ranges)==0){
-    return(NULL)
-  }else if(all(is.na(ranges)) & itr<3 ){
-    r=r-200
-    subseq <- subseq(DNAStr[[j]],start=ifelse(start-r<1,1,start-r),end=ifelse(stop+k<length(DNAStr[[j]]),stop+k,length(DNAStr[[j]])))
 
-    ranges <- findOverlappingOrfsPar(subseq,range = IRanges(r,stop-start+r))
-    itr <- itr+1
-  }
   score=-1
   best <- NULL
   bestAA <- NULL

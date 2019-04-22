@@ -1,7 +1,6 @@
 #'Finds best overlapping ORF in terms of the number of identical aminoacids
 #'@param DNAStr DNA alignment of syntenic block. This is the full alignment not subalignment
 #'@param j this is the iterator for the ID of species of interest on DNAStr and types vector
-#'@param r this is the range parameter. This specifies how far from the proto-gene region will be taken into account for ORF finding default =200
 #'@param start start position of ATG of proto-gene on DNAStr
 #'@param stop last nucleotide position of proto-gene on DNAStr
 #'@param ygeneSeq proto-gene sequence without gaps. This is used for determining the frame of proto-gene with respect to the aligned other species ORF
@@ -12,20 +11,11 @@
 #'@import IRanges
 #'@export
 
-findBestOverlap <- function(DNAStr, j, r,start, stop, ygeneSeq, types , k=NULL) {
-  k <- ifelse(is.null(k),r,k)
-  subseq <- subseq(DNAStr[[j]],start=ifelse(start-r<1,1,start-r),end=ifelse(stop+k<length(DNAStr[[j]]),stop+k,length(DNAStr[[j]])))
-  ranges <- findOverlappingOrfs(subseq,range = IRanges(r,stop-start+r))
+findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , k=NULL) {
+  subseq <- DNAStr[[j]]
+  ranges <- findOverlappingOrfs(subseq,range = IRanges(start,stop))
   itr <- 0
-  if(length(ranges)==0){
-    return(NULL)
-  }else if(all(is.na(ranges)) & itr<3 ){
-    r=r-200
-    subseq <- subseq(DNAStr[[j]],start=ifelse(start-r<1,1,start-r),end=ifelse(stop+k<length(DNAStr[[j]]),stop+k,length(DNAStr[[j]])))
 
-    ranges <- findOverlappingOrfsPar(subseq,range = IRanges(r,stop-start+r))
-    itr <- itr+1
-  }
   score=-1
   best <- NULL
   bestAA <- NULL
@@ -36,8 +26,8 @@ findBestOverlap <- function(DNAStr, j, r,start, stop, ygeneSeq, types , k=NULL) 
     stopPosRanges <- end(ranges)[u]
     sequenceRanges <-subseq(subseq,startPosRanges,stopPosRanges)
     # names(sequenceRanges) <- types[[j]]
-    if(startPosRanges<r+1){
-      smorfSubSeq <- subseq(DNAStr[1],start-r-1+startPosRanges,start-r-1+stopPosRanges)
+    if(startPosRanges<start+1){
+      smorfSubSeq <- subseq(DNAStr[1],startPosRanges,stopPosRanges)
       place <- str_locate(turnWoGaps(smorfSubSeq[[1]]),as.character(subseq(ygeneSeq,1,10))[[1]])
       if(any(is.na(place))){
         next
@@ -54,7 +44,7 @@ findBestOverlap <- function(DNAStr, j, r,start, stop, ygeneSeq, types , k=NULL) 
         smorfSubSeq <- xscat(str_sub(nogapscer,placenogap[1,1]-2,placenogap[1,1]-1),smorfSubSeq)
       }
     }else{
-      smorfSubSeq <- subseq(DNAStr[1],start-r-1+startPosRanges,start-r-1+stopPosRanges)
+      smorfSubSeq <- subseq(DNAStr[1],startPosRanges,stopPosRanges)
       nogap <- DNAString(turnWoGaps(smorfSubSeq[[1]]))
       place <- str_locate(as.character(ygeneSeq),as.character(subseq(nogap,1,ifelse(length(nogap)<10,length(nogap),10))))
       if(any(is.na(place))){

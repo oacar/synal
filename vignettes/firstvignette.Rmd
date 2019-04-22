@@ -24,7 +24,8 @@ First thing the software needs is the sequence files and sequence names.
 library(synal)
 library(Biostrings)
 specNames <- c('Scer','Spar','Smik','Skud','Sbay','Sarb')
-aln <- readDNAStringSet('~/Downloads/combined/YBR013C/YBR013C_alignment.fa')
+filename <- system.file('examples','exampleAlignment.fa',package='synal')
+aln <- readDNAStringSet(filename)
 
 ```
 
@@ -34,14 +35,14 @@ aln <- readDNAStringSet('~/Downloads/combined/YBR013C/YBR013C_alignment.fa')
 After you read the alignment file and sequence names, the ORF of interest should be given. If you are interested in an S.cerevisiae annotated ORF, you can find the sequence using findYgeneSeq function.
 ```{r findYgeneSeq}
 
-ygene <- findYGeneSeq('YBR013C')
+ygene <- findYGeneSeq('YBR196C-A')
 ```
 
 #alignment and getting subalignments
 After giving correct inputs, it is easy to get subalignments and Amino acid translations.
 
 ```{r subalignment}
-  dnalist <- align(aln,'YBR013C', '../../synal_deneme/',ygene)
+  dnalist <- align(aln,'YBR196C-A',ygeneSeq = ygene)
   DNAStr <- dnalist$dnaAlignmentList[[1]]
   start <- dnalist$dnaAlignmentList[[2]]
   stop <- dnalist$dnaAlignmentList[[3]]
@@ -53,15 +54,16 @@ After giving correct inputs, it is easy to get subalignments and Amino acid tran
 if you are interested in finding all overllaping ORFs with your ORF of interest you can do so.
 ```{r find orthologs}
 types<-specNames#c('scer','Spar','Smik','Skud','Sbay','Sarb')
-vec <- c(1,1,0,0,0,0)
+vec <- c(1,1,1,0,0,0)
 types <- types[vec>0]
-findHomolog(DNAStr[vec>0], aa_alignment[vec>0], start, stop, ygene, types,  '../../synal_deneme/', 'YBR013C')
-
+homologs <- findHomolog(DNAStr[vec>0], aa_alignment[vec>0], start, stop, ygene, types, orfName = 'YBR196C-A')
+homologs
 ```
 
 #getting dataframe
+todo:add example inputs to use in analyze function
 ```{r analysis}
-dataTable <- analyze('../../synal_deneme/','YBR013C',types)
+#dataTable <- analyze('../../synal_deneme/','YBR013C',types)
 ```
 
 #all in one

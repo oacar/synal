@@ -11,13 +11,13 @@ findOverlappingOrfs <- function(dna,range) {
   }
   stoppositions <- str_locate_all(as.character(dna),'TAA|TAG|TGA')[[1]]
 
-  orfpos <- str_locate_all(as.character(dna),'ATG(?:[ATGC]{3})*?(?:TAA|TAG|TGA)')[[1]]
+  #orfpos <- str_locate_all(as.character(dna),'ATG(?:[ATGC]{3})*?(?:TAA|TAG|TGA)')[[1]]
   ranges <- IRanges()
   #
   eg <- expand.grid(startpositions[,1],stoppositions[,2])
   eg_list <- eg[(eg[,1]<eg[,2]) & (eg[,2]-eg[,1]+1)%%3==0,] #take start positions < stop positions only and create iranges object with those positions
   eg_range <- IRanges(start=eg_list[,1],end=eg_list[,2])
-  eg_ranges <- eg_range[eg_range%over%range]
+  eg_ranges <- eg_range#[eg_range%over%range]
   newranges <- IRanges()
 
   for(i in 1:length(unique(start(eg_ranges)))){
@@ -35,6 +35,7 @@ findOverlappingOrfs <- function(dna,range) {
     newranges2 <- append(newranges2,maxeth)
   }
   #toc()
+  newranges2 <- newranges2[newranges2%over%range]
   newranges2 <- newranges2[width(overlapsRanges(newranges2,range))>12]
 
   newranges2

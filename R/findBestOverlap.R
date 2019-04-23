@@ -12,14 +12,16 @@
 #'@export
 
 findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , k=NULL) {
-  subseq <- DNAStr[[j]]
+  subseq <- DNAStr[[j]]%>%as.character()
   #tic('ranges')
   map=map_alignment_sequence(subseq,turnWoGaps(subseq))
 
-  range=IRanges(map[map==start],map[map==stop])
-  ranges <- findOverlappingOrfs(subseq,range = range)#IRanges(start,stop))
+  range=IRanges(map[map==start]%>%names()%>%as.integer(),map[map==stop]%>%names()%>%as.integer())
+  ranges <- findOverlappingOrfs(subseq%>%turnWoGaps(),range = range)#IRanges(start,stop))
   ranges <- IRanges(map[start(ranges)],map[end(ranges)])
-
+  if(length(ranges)==0){
+    return(NULL)
+  }
  # toc()
   itr <- 0
  # tic('best')
@@ -28,6 +30,8 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , k=NULL) {
   bestAA <- NULL
   bestDna <- NULL
   bestAAsmall <- NULL
+  
+  #print(j)
   for( u in 1:length(ranges)){
     startPosRanges <- start(ranges)[u]
     stopPosRanges <- end(ranges)[u]

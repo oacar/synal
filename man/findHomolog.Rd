@@ -4,8 +4,8 @@
 \alias{findHomolog}
 \title{This function compares all overlapping ORFs with the Scer ORF and saves best ORF in terms of number of AAs (highest number of identical aminoacids)}
 \usage{
-findHomolog(DNAStr, aa_alignment, start, stop, ygeneSeq, types, path,
-  orfName)
+findHomolog(DNAStr, aa_alignment, start, stop, ygeneSeq, types,
+  path = NULL, orfName)
 }
 \arguments{
 \item{DNAStr}{aligned DNAStringSet with all sequences (including the ORF to be searched) in it, this is the full syntenic block not subalignment}

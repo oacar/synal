@@ -4,14 +4,12 @@
 \alias{findBestOverlap}
 \title{Finds best overlapping ORF in terms of the number of identical aminoacids}
 \usage{
-findBestOverlap(DNAStr, j, r, start, stop, ygeneSeq, types, k = NULL)
+findBestOverlap(DNAStr, j, start, stop, ygeneSeq, types, k = NULL)
 }
 \arguments{
 \item{DNAStr}{DNA alignment of syntenic block. This is the full alignment not subalignment}
 
 \item{j}{this is the iterator for the ID of species of interest on DNAStr and types vector}
-
-\item{r}{this is the range parameter. This specifies how far from the proto-gene region will be taken into account for ORF finding default =200}
 
 \item{start}{start position of ATG of proto-gene on DNAStr}
 

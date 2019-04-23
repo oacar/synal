@@ -13,9 +13,16 @@
 
 findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , k=NULL) {
   subseq <- DNAStr[[j]]
-  ranges <- findOverlappingOrfs(subseq,range = IRanges(start,stop))
-  itr <- 0
+  #tic('ranges')
+  map=map_alignment_sequence(subseq,turnWoGaps(subseq))
 
+  range=IRanges(map[map==start],map[map==stop])
+  ranges <- findOverlappingOrfs(subseq,range = range)#IRanges(start,stop))
+  ranges <- IRanges(map[start(ranges)],map[end(ranges)])
+
+ # toc()
+  itr <- 0
+ # tic('best')
   score=-1
   best <- NULL
   bestAA <- NULL
@@ -83,12 +90,13 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , k=NULL) {
       }
     }
   }
+ # toc()
+
   if(is.null(bestDna) | is.null(bestAA) | is.null(bestAAsmall)){
     return(NULL)
   }else{
     return(list(dna=bestDna,aa=bestAA, aaOverlap=bestAAsmall))
   }
-
 }
 # rm(bestDna)
 # rm(bestAA)

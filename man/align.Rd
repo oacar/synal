@@ -4,7 +4,7 @@
 \alias{align}
 \title{Gets DNAStringSet aligns it}
 \usage{
-align(mySequences, orfName, path, ygeneSeq = NULL)
+align(mySequences, orfName, path = NULL, ygeneSeq = NULL)
 }
 \arguments{
 \item{mySequences}{DNAStringSet with all sequences in it}

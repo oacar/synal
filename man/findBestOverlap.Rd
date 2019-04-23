@@ -4,7 +4,8 @@
 \alias{findBestOverlap}
 \title{Finds best overlapping ORF in terms of the number of identical aminoacids}
 \usage{
-findBestOverlap(DNAStr, j, start, stop, ygeneSeq, types, k = NULL)
+findBestOverlap(DNAStr, j, start, stop, ygeneSeq, types,
+  map_ygene = NULL)
 }
 \arguments{
 \item{DNAStr}{DNA alignment of syntenic block. This is the full alignment not subalignment}

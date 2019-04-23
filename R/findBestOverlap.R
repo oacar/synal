@@ -11,20 +11,25 @@
 #'@import IRanges
 #'@export
 
-findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , k=NULL) {
+findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=NULL) {
   subseq <- DNAStr[[j]]%>%as.character()
   #tic('ranges')
-  map=map_alignment_sequence(subseq,turnWoGaps(subseq))
-
-  range=IRanges(map[map==start]%>%names()%>%as.integer(),map[map==stop]%>%names()%>%as.integer())
-  ranges <- findOverlappingOrfs(subseq%>%turnWoGaps(),range = range)#IRanges(start,stop))
-  ranges <- IRanges(map[start(ranges)],map[end(ranges)])
+  #map_ygene <- map_alignment_sequence(DNAStr[[1]]%>%as.character(),turnWoGaps(DNAStr[[1]]%>%as.character()))
+  range_ygene_gapped <- IRanges(start,stop)
+  map_j <- map_alignment_sequence(subseq,turnWoGaps(subseq))
+  range_ygene_start<- ifelse(length(map_j[map_j==start])!=0,map_j[map_j==start]%>%names()%>%as.integer(),
+                                  which.max(map_j[map_j<start])%>%names()%>%as.integer)
+  
+  range_ygene_end <- ifelse(length(map_j[map_j==stop])!=0,map_j[map_j==stop]%>%names()%>%as.integer(),
+                                       which.max(map_j[map_j<stop])%>%names()%>%as.integer)
+  range_ygene=IRanges(range_ygene_start,range_ygene_end)
+  ranges <- findOverlappingOrfs(subseq%>%turnWoGaps(),range = range_ygene)#IRanges(start,stop))
+  ranges_gapped <- IRanges(map_j[start(ranges)],map_j[end(ranges)])
   if(length(ranges)==0){
     return(NULL)
   }
- # toc()
-  itr <- 0
- # tic('best')
+  # toc()
+  # tic('best')
   score=-1
   best <- NULL
   bestAA <- NULL
@@ -32,70 +37,51 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , k=NULL) {
   bestAAsmall <- NULL
   
   #print(j)
-  for( u in 1:length(ranges)){
-    startPosRanges <- start(ranges)[u]
-    stopPosRanges <- end(ranges)[u]
-    sequenceRanges <-subseq(subseq,startPosRanges,stopPosRanges)
-    # names(sequenceRanges) <- types[[j]]
-    if(startPosRanges<start+1){
-      smorfSubSeq <- subseq(DNAStr[1],startPosRanges,stopPosRanges)
-      place <- str_locate(turnWoGaps(smorfSubSeq[[1]]),as.character(subseq(ygeneSeq,1,10))[[1]])
-      if(any(is.na(place))){
-        next
-      }
-      longer=T
-      if(place[1,1]%%3==0){
-        nogapscer <- turnWoGaps(DNAStr[[1]])
-        placenogap <- str_locate(nogapscer,as.character(subseq(ygeneSeq,1,10))[[1]])
-        smorfSubSeq <- xscat(str_sub(nogapscer,placenogap[1,1]-1,placenogap[1,1]-1),smorfSubSeq)
-
-      }else if(place[1,1]%%3==2){
-        nogapscer <- turnWoGaps(DNAStr[[1]])
-        placenogap <- str_locate(nogapscer,as.character(subseq(ygeneSeq,1,10))[[1]])
-        smorfSubSeq <- xscat(str_sub(nogapscer,placenogap[1,1]-2,placenogap[1,1]-1),smorfSubSeq)
-      }
-    }else{
-      smorfSubSeq <- subseq(DNAStr[1],startPosRanges,stopPosRanges)
-      nogap <- DNAString(turnWoGaps(smorfSubSeq[[1]]))
-      place <- str_locate(as.character(ygeneSeq),as.character(subseq(nogap,1,ifelse(length(nogap)<10,length(nogap),10))))
-      if(any(is.na(place))){
-        next
-      }
-
-      longer=F
-      if(place[1,1]%%3==2){
-        smorfSubSeq <- xscat(str_sub(as.character(ygeneSeq),place[1,1]-1,place[1,1]-1),smorfSubSeq)
-#subseq(DNAStr[1],start-r-2+startPosRanges,start-r-1+stopPosRanges)
-
-      }else if(place[1,1]%%3==0){
-        smorfSubSeq <- xscat(str_sub(as.character(ygeneSeq),place[1,1]-2,place[1,1]-1),smorfSubSeq)
-      }
-    }
-    dnaSet <- append(DNAStringSet(sequenceRanges),smorfSubSeq)
-    names(dnaSet) <- names(DNAStr)[c(j,1)]
-    aaRanges <- aaTranslation(dnaSet,DNAStr[c(j,1)])
-    aaRangesSmall <- findSmallFrame(aaRanges,translate(subseq(ygeneSeq,1,12))[[1]],aaRanges[[2]],overlap=T,longer=longer)[c(2,1)]
-    if(is.logical(aaRangesSmall)){
-      warning(paste(names(ygeneSeq),types[j],'has a problematic overlapping ORF. Nice to check'))
-      next
-    }
-    newscore <- calcIdentity(aaRangesSmall)*width(aaRanges[1])
-    if(score<newscore[2,1]){
+  
+  for(u in 1:length(ranges)){
+    ranges_gapped_u <- ranges_gapped[u]
+    ranges_u <- ranges[u]
+    union_range <- union(ranges_gapped_u,range_ygene_gapped)
+    intersect_range <- intersect(ranges_gapped_u,range_ygene_gapped)
+    intersectStart <- start(intersect_range)
+    unionStart <- start(union_range)
+    intersectEnd<- end(intersect_range)
+    unionEnd <- end(union_range)
+   
+    
+    
+    #check ygene start position
+    ygene_union_int <- checkFrame(dna=DNAStr[1]%>%turnWoGaps(),map = map_ygene,unionStart,unionEnd,intersectStart,intersectEnd,start)
+    other_union_int <- checkFrame(dna=DNAStr[j]%>%turnWoGaps(),map = map_j,unionStart,unionEnd,intersectStart,intersectEnd,start(ranges_gapped_u))
+    
+    #check other sequence start position
+    intersectDna <- append(ygene_union_int$intersectDna,other_union_int$intersectDna)
+    unionDna <-  append(ygene_union_int$unionDna,other_union_int$unionDna)#%>%muscle()%>%DNAStringSet()
+    names(intersectDna) <- (types[c(1,j)])
+    names(unionDna) <- (types[c(1,j)])
+    unionAA <- aaTranslation(unionDna,unionDna)%>%muscle(quiet = T)%>%AAStringSet()
+    intersectAA <- aaTranslation(intersectDna,intersectDna)%>%muscle(quiet = T)%>%AAStringSet()
+    
+  
+  if(is.logical(intersectAA)){
+    warning(paste(names(ygeneSeq),types[j],'has a problematic overlapping ORF. Nice to check'))
+    next
+  }
+  newscore <- calcIdentity(intersectAA,percent = F)/(width(ygeneSeq)/3)
+  if(score<newscore[2,1]){
+    score=newscore[2,1]
+    bestAA <- unionAA
+    bestAAsmall <- intersectAA
+    bestDna <- unionDna
+  }else if(score==newscore[2,1]){
+    if(length(bestAA[[2]])<length(unionAA[[1]])){
       score=newscore[2,1]
-      bestAA <- aaRanges[c(2,1)]
-      bestAAsmall <- aaRangesSmall
-      bestDna <- dnaSet[c(2,1)]
-    }else if(score==newscore[2,1]){
-      if(length(bestAA[[2]])<length(aaRanges[[1]])){
-        score=newscore[2,1]
-        bestAA <- aaRanges[c(2,1)]
-        bestAAsmall <- aaRangesSmall
-        bestDna <- dnaSet[c(2,1)]
-      }
+      bestAA <- unionAA
+      bestAAsmall <- intersectAA
+      bestDna <- unionDna
     }
   }
- # toc()
-
+  }
   if(is.null(bestDna) | is.null(bestAA) | is.null(bestAAsmall)){
     return(NULL)
   }else{
@@ -105,3 +91,60 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , k=NULL) {
 # rm(bestDna)
 # rm(bestAA)
 # rm(bestAAsmall)
+# start <- start(ranges_gapped_u)
+# map <- map_ygene
+# dna <- DNAStr[1]%>%turnWoGaps()
+#'this function finds correct frame sequences of intersection and union of two Iranges objects
+#'@param dna ungapped sequence
+#'@param map mapped list of original sequence-->gapped alignment created by {map_alignment_sequence}
+#'@param unionStart union range start position
+#'@param unionEnd union range last position
+#'@param intersectStart intersection range start position
+#'@param intersectEnd intersection range end position
+#'@param start start of ORF of interest, to compare with unionStart and intersectStart values
+#'@return list of correct frame intersection and union dna sequences taken as subsequence of {dna}
+#'
+#'@export
+#'
+checkFrame <- function(dna, map,unionStart,unionEnd,intersectStart,intersectEnd,start) {
+  start_ungapped <-map[map==start]%>%names()%>%as.integer()
+
+  #this if else does this:
+  #first checks if position x has a corresponding map key in the map list. If so, returns the key value which is the position of x 
+  #on the ungapped sequence. If there is no key, then it is a gap '-' character on the gapped sequence, thus returns the key for the next
+  #non-gap character.
+  #the goal of this is to find the position of union and intersection ranges and compare those to actual start-codons to conserve the 
+  #frame for translation. otherwise the actual orf frame might change due to extra gaps in the alignment
+  union_start_ungapped_pos<- ifelse(length(map[map==unionStart])!=0,map[map==unionStart]%>%names()%>%as.integer(),
+                                           which.min(map[map>unionStart])%>%names()%>%as.integer)
+  
+  intersect_start_ungapped_pos <- ifelse(length(map[map==intersectStart])!=0,map[map==intersectStart]%>%names()%>%as.integer(),
+                                               which.min(map[map>intersectStart])%>%names()%>%as.integer)
+  
+  union_end_ungapped_pos<- ifelse(length(map[map==unionEnd])!=0,map[map==unionEnd]%>%names()%>%as.integer(),
+                                    which.min(map[map>unionEnd])%>%names()%>%as.integer)
+  
+  intersect_end_ungapped_pos <- ifelse(length(map[map==intersectEnd])!=0,map[map==intersectEnd]%>%names()%>%as.integer(),
+                                         which.min(map[map>intersectEnd])%>%names()%>%as.integer)
+  
+  
+  diff_union <- (start_ungapped-union_start_ungapped_pos)
+  
+  diff_intersect <- (start_ungapped-intersect_start_ungapped_pos)
+  
+  if(diff_union%%3==1){
+    union_start_ungapped_pos <- (union_start_ungapped_pos+1)
+  }else if(diff_union%%3==2){
+    union_start_ungapped_pos <- (union_start_ungapped_pos-1)
+  }
+  
+  if(diff_intersect%%3==1){
+    intersect_start_ungapped_pos <- (intersect_start_ungapped_pos-2)
+  }else if(diff_intersect%%3==2){
+    intersect_start_ungapped_pos <- (intersect_start_ungapped_pos-1)
+  }
+  
+  intersectDna <- dna%>%subseq(intersect_start_ungapped_pos,intersect_end_ungapped_pos)%>%DNAStringSet()
+  unionDna <- dna%>%subseq(union_start_ungapped_pos,union_end_ungapped_pos)%>%DNAStringSet()
+  return(list(intersectDna=intersectDna,unionDna=unionDna))
+}

@@ -12,9 +12,10 @@
 
 findHomolog <- function(DNAStr, aa_alignment, start, stop, ygeneSeq, types, path=NULL, orfName) {
   all <- list()
+  map_ygene <- map_alignment_sequence(DNAStr[[1]]%>%as.character(),turnWoGaps(DNAStr[[1]]%>%as.character()))
   for(j in 2:(length(DNAStr))){
-
-    bo <- findBestOverlap(DNAStr, j, start, stop, ygeneSeq, types)
+    
+    bo <- findBestOverlap(DNAStr, j, start, stop, ygeneSeq, types,map_ygene)
 
     if(is.null(bo)==F){
       if(is.null(path)==F){

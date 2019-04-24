@@ -7,7 +7,7 @@
 analyze(path, orfName, types)
 }
 \arguments{
-\item{path}{folder path for output files}
+\item{path}{folder path for reading input files}
 
 \item{orfName}{orf identifier for the orf of interest}
 

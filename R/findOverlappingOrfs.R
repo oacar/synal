@@ -4,30 +4,39 @@
 #'@return IRanges object with start and end positions determined using \code{dna} object
 #'@export
 findOverlappingOrfs <- function(dna,range) {
-  startpositions <- str_locate_all(as.character(dna),'A[-]*T[-]*G')[[1]]
+  #tic()
+  startpositions <- str_locate_all(as.character(dna),'ATG')[[1]]
   if(length(startpositions)==0){
     return(NA)
   }
-  stoppositions <- str_locate_all(as.character(dna),'T[-]*A[-]*A|T[-]*A[-]*G|T[-]*G[-]*A')[[1]]
-  ranges <- IRanges()
-  for(i in startpositions[,1]){
-    startpos <- i
-    for(j in 1:nrow(stoppositions)){
-      stoppos <- stoppositions[j,2]
-      if(stoppos>startpos){
-        seq <- turnWoGaps(subseq(dna,start = startpos,end=stoppos))
-        aatr <- suppressWarnings(translate(DNAString((seq))))
+  stoppositions <- str_locate_all(as.character(dna),'TAA|TAG|TGA')[[1]]
 
-        if(alphabetFrequency(aatr)['*']>1){
-          next
-        }
-        if(nchar((seq))%%3==0 & any(end(ranges)[start(ranges)==startpos]<stoppos)==F & any(start(ranges)[end(ranges)==stoppos]<startpos)==F){
-          ranges <- append(ranges,IRanges(startpos,stoppositions[j,2]))
-        }
-      }
-    }
+  #orfpos <- str_locate_all(as.character(dna),'ATG(?:[ATGC]{3})*?(?:TAA|TAG|TGA)')[[1]]
+  ranges <- IRanges()
+  #
+  eg <- expand.grid(startpositions[,1],stoppositions[,2])
+  eg_list <- eg[(eg[,1]<eg[,2]) & (eg[,2]-eg[,1]+1)%%3==0,] #take start positions < stop positions only and create iranges object with those positions
+  eg_range <- IRanges(start=eg_list[,1],end=eg_list[,2])
+  eg_ranges <- eg_range#[eg_range%over%range]
+  newranges <- IRanges()
+
+  for(i in 1:length(unique(start(eg_ranges)))){
+    e <- unique(start(eg_ranges))[i]
+    eth <- eg_ranges[start(eg_ranges)==e]
+    maxeth <- eth[which.min(width(eth))]
+    newranges <- append(newranges,maxeth)
   }
-  ranges <- ranges[ranges%over%range]
-  ranges <- ranges[width(overlapsRanges(ranges,range))>12]
-  ranges
+  newranges2 <- IRanges()
+  #from the ORFs that end at the same position, take the one started earlier.
+  for(i in 1:length(unique(end(newranges)))){
+    e <- unique(end(newranges))[i]
+    eth <- newranges[end(newranges)==e]
+    maxeth <- eth[which.max(width(eth))]
+    newranges2 <- append(newranges2,maxeth)
+  }
+  #toc()
+  newranges2 <- newranges2[newranges2%over%range]
+  newranges2 <- newranges2[width(overlapsRanges(newranges2,range))>12]
+
+  newranges2
 }

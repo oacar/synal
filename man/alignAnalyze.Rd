@@ -4,7 +4,7 @@
 \alias{alignAnalyze}
 \title{This will be THE function for alignment-analysis output}
 \usage{
-alignAnalyze(filename, orfName, annotated = T, outputDirectory,
+alignAnalyze(filename, orfName, annotated = T, outputDirectory = NULL,
   specNames, ...)
 }
 \arguments{

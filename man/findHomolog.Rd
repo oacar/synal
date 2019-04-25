@@ -5,7 +5,7 @@
 \title{This function compares all overlapping ORFs with the Scer ORF and saves best ORF in terms of number of AAs (highest number of identical aminoacids)}
 \usage{
 findHomolog(DNAStr, aa_alignment, start, stop, ygeneSeq, types,
-  path = NULL, orfName)
+  path = NULL, orfName, best = FALSE)
 }
 \arguments{
 \item{DNAStr}{aligned DNAStringSet with all sequences (including the ORF to be searched) in it, this is the full syntenic block not subalignment}
@@ -23,6 +23,8 @@ findHomolog(DNAStr, aa_alignment, start, stop, ygeneSeq, types,
 \item{path}{path for files to be written in}
 
 \item{orfName}{ORF identifier name that will be used for file writing}
+
+\item{best}{should the function returns all overlapping ORFs or only the best one}
 }
 \value{
 nothing returns at the moment, all files are written in path with 3 files for each species. pairwise nucleotide alignment, pairwise AA alignment and pairwise AA alignment that shows only overlap of two ORFs

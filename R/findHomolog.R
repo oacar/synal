@@ -7,24 +7,59 @@
 #'@param types this is a vector which contains the species names in the alignment for writing correct output files
 #'@param orfName ORF identifier name that will be used for file writing
 #'@param path path for files to be written in
+#'@param best should the function returns all overlapping ORFs or only the best one
 #'@return nothing returns at the moment, all files are written in path with 3 files for each species. pairwise nucleotide alignment, pairwise AA alignment and pairwise AA alignment that shows only overlap of two ORFs
 #'@export
 
-findHomolog <- function(DNAStr, aa_alignment, start, stop, ygeneSeq, types, path=NULL, orfName) {
+findHomolog <- function(DNAStr, aa_alignment, start, stop, ygeneSeq, types, path=NULL, orfName,best=FALSE) {
   all <- list()
   map_ygene <- map_alignment_sequence(DNAStr[[1]]%>%as.character(),turnWoGaps(DNAStr[[1]]%>%as.character()))
   for(j in 2:(length(DNAStr))){
     
     bo <- findBestOverlap(DNAStr, j, start, stop, ygeneSeq, types,map_ygene)
-
+    
     if(is.null(bo)==F){
-      if(is.null(path)==F){
-        writeXStringSet(bo$dna, file=paste(paste(path,orfName, sep="/"),"_subalignment_",types[j],".fa",sep = ""))
-        writeXStringSet(bo$aa,file=paste(paste(path,orfName, sep="/"),"_AATranslation_",types[j],".fa",sep = ""))
-        writeXStringSet(bo$aaOverlap,file=paste(paste(path,orfName, sep="/"),"_AATranslation_overlap_",types[j],".fa",sep = ""))
-      }else{
-        all[[types[j]]] <- bo
+      if(best){#if user asks only for only best overlap, it will be returned/written to file
+        if(is.null(path)==F){
+          if(dir.exists(path)){
+            dir.create(paste0(path,'/',types[j]))
+            bestId <- bo$id
+            writeXStringSet(bo$seq[[bestId]]$dna, file=paste(paste(path,types[j],orfName, sep="/"),"_subalignment_",types[j],"_best.fa",sep = ""))
+            writeXStringSet(bo$seq[[bestId]]$aa,file=paste(paste(path,types[j],orfName, sep="/"),"_AATranslation_",types[j],"_best.fa",sep = ""))
+            writeXStringSet(bo$seq[[bestId]]$aaOverlap,file=paste(paste(path,types[j],orfName, sep="/"),"_AATranslation_overlap_",types[j],"_best.fa",sep = ""))
+            writeXStringSet(bo$seq[[bestId]]$dnaOverlap,file=paste(paste(path,types[j],orfName, sep="/"),"_subalignment_overlap_",types[j],"_best.fa",sep = ""))
+            
+          }else{
+            stop(paste0('output path for writing homologs (in findHomolog) is wrong/does not exist. Please check: ',path))
+          }}
+          all[[types[j]]] <- bo$seq[[bestId]]
+          
+      }else{#all overlapping ORFs are returned otherwise
+        if(is.null(path)==F){
+          if(dir.exists(path)){
+            dir.create(paste0(path,'/',types[j]))
+            for(itr in 1:length(bo$seq)){
+              if(itr==bo$id){#add best to file name for best homolog
+                writeXStringSet(bo$seq[[itr]]$dna, file=paste(paste(path,types[j],orfName, sep="/"),"_subalignment_",types[j],"_best.fa",sep = ""))
+                writeXStringSet(bo$seq[[itr]]$aa,file=paste(paste(path,types[j],orfName, sep="/"),"_AATranslation_",types[j],"_best.fa",sep = ""))
+                writeXStringSet(bo$seq[[itr]]$aaOverlap,file=paste(paste(path,types[j],orfName, sep="/"),"_AATranslation_overlap_",types[j],"_best.fa",sep = ""))
+                writeXStringSet(bo$seq[[itr]]$dnaOverlap,file=paste(paste(path,types[j],orfName, sep="/"),"_subalignment_overlap_",types[j],"_best.fa",sep = ""))
+              }else{
+                writeXStringSet(bo$seq[[itr]]$dna, file=paste(paste(path,types[j],orfName, sep="/"),"_subalignment_",types[j],"_",itr,".fa",sep = ""))
+                writeXStringSet(bo$seq[[itr]]$aa,file=paste(paste(path,types[j],orfName, sep="/"),"_AATranslation_",types[j],"_",itr,".fa",sep = ""))
+                writeXStringSet(bo$seq[[itr]]$aaOverlap,file=paste(paste(path,types[j],orfName, sep="/"),"_AATranslation_overlap_",types[j],"_",itr,".fa",sep = ""))
+                writeXStringSet(bo$seq[[itr]]$dnaOverlap,file=paste(paste(path,types[j],orfName, sep="/"),"_subalignment_overlap_",types[j],"_",itr,".fa",sep = ""))
+              }
+             
+            }
+            
+          }else{
+            stop(paste0('output path for writing homologs (in findHomolog) is wrong/does not exist. Please check: ',path))
+          }}
+          all[[types[j]]] <- bo$seq
+          
       }
+      
     }
   }
   all

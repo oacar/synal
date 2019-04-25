@@ -19,11 +19,13 @@ findBestOverlap(DNAStr, j, start, stop, ygeneSeq, types,
 \item{ygeneSeq}{proto-gene sequence without gaps. This is used for determining the frame of proto-gene with respect to the aligned other species ORF}
 
 \item{types}{this is used for names. by default c('Spar','Smik','Skud','Sbay')}
+
+\item{map_ygene}{this is the map between aligned and original sequence of ORF of interest}
 }
 \value{
 list of three elements
 
-dna = dna alignment of jth species orf with proto-gene, aa = aa alignment with full jth ORF, aaOverlap = overlapping regions of both ORFs
+dna = dna alignment of jth species orf with proto-gene, aa = aa alignment with full jth ORF, aaOverlap = overlapping regions of both ORFs(translated), dnaOverlap=overlapping regions of both ORFs
 }
 \description{
 Finds best overlapping ORF in terms of the number of identical aminoacids

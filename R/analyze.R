@@ -1,13 +1,14 @@
+#'Analyze msa
 #'This function reads all output files previously created and analyzes the outputs
 #'@param orfName orf identifier for the orf of interest
-#'@param path folder path for reading input files
+#'@param outputDirectory folder path for reading input files
 #'@param types this is a vector to assess which sequences exists
 #'@export
 
-analyze <- function(path,orfName,types) {
+analyze <- function(outputDirectory,orfName,types) {
   #Analysis------------
-  if(dir.exists(path)==F){
-    stop(paste0(path, ' does not exist. Please check the input'))
+  if(dir.exists(outputDirectory)==F){
+    stop(paste0(outputDirectory, ' does not exist. Please check the input'))
   }
 
   colNames<-c("ORF Name",	"Do all Start Codon Align?" ,"Do all Stop Codon Align","Length of ORF (DNA)","Length of Amino Acid Sequence ORF")
@@ -30,8 +31,8 @@ analyze <- function(path,orfName,types) {
 
   #Read inputs####
   print(orfName)
-  subalign<-readDNAStringSet(paste(path,'/',orfName, '_subalignment.fa',sep=''))
-  aa<-readAAStringSet(paste(path,'/',orfName,'_AATranslation.fa',sep = ''))
+  subalign<-readDNAStringSet(paste(outputDirectory,'/',orfName, '_subalignment.fa',sep=''))
+  aa<-readAAStringSet(paste(outputDirectory,'/',orfName,'_AATranslation.fa',sep = ''))
   rw=1
   dataTable$`ORF Name`[rw]<-orfName
 
@@ -58,9 +59,9 @@ analyze <- function(path,orfName,types) {
   for(i in 2:length(types)){
     name=types[i]
 
-    AAFileName<-paste(path,'/',orfName, '_AATranslation_',name,'.fa',sep = '')
-    DNAFileName<-paste(path,'/',orfName, '_subalignment_',name,'.fa',sep = '')
-    AAOverlapFileName<-paste(path,'/',orfName, '_AATranslation_overlap_',name,'.fa',sep = '')
+    AAFileName<-paste(outputDirectory,'/',orfName, '_AATranslation_',name,'.fa',sep = '')
+    DNAFileName<-paste(outputDirectory,'/',orfName, '_subalignment_',name,'.fa',sep = '')
+    AAOverlapFileName<-paste(outputDirectory,'/',orfName, '_AATranslation_overlap_',name,'.fa',sep = '')
     check<-FALSE
 
     if(file.exists(AAFileName)){

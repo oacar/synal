@@ -2,17 +2,19 @@
 % Please edit documentation in R/analyze.R
 \name{analyze}
 \alias{analyze}
-\title{This function reads all output files previously created and analyzes the outputs}
+\title{Analyze msa
+This function reads all output files previously created and analyzes the outputs}
 \usage{
-analyze(path, orfName, types)
+analyze(outputDirectory, orfName, types)
 }
 \arguments{
-\item{path}{folder path for reading input files}
+\item{outputDirectory}{folder path for reading input files}
 
 \item{orfName}{orf identifier for the orf of interest}
 
 \item{types}{this is a vector to assess which sequences exists}
 }
 \description{
+Analyze msa
 This function reads all output files previously created and analyzes the outputs
 }

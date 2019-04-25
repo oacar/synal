@@ -4,14 +4,14 @@
 \alias{align}
 \title{Gets DNAStringSet aligns it}
 \usage{
-align(mySequences, orfName, path = NULL, ygeneSeq = NULL)
+align(mySequences, orfName, outputDirectory = NULL, ygeneSeq = NULL)
 }
 \arguments{
 \item{mySequences}{DNAStringSet with all sequences in it}
 
 \item{orfName}{ORF identifier name that will be used for file writing}
 
-\item{path}{path for files to be written in}
+\item{outputDirectory}{path for files to be written in}
 
 \item{ygeneSeq}{sequence of ORF of interest. If not given, last sequence of {mySequences} considered to be ygeneSeq}
 }

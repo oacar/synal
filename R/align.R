@@ -1,13 +1,13 @@
 #'Gets DNAStringSet aligns it
 #'@param mySequences DNAStringSet with all sequences in it
 #'@param orfName ORF identifier name that will be used for file writing
-#'@param path path for files to be written in
+#'@param outputDirectory path for files to be written in
 #'@param ygeneSeq sequence of ORF of interest. If not given, last sequence of {mySequences} considered to be ygeneSeq
 #'@return aligned DNAStringset, start and stop positions of orfName on DNAStringSet and AA alignment of the orfName sequence with other species
 #'@export
 
 
-align <- function(mySequences, orfName, path=NULL,ygeneSeq=NULL) {
+align <- function(mySequences, orfName, outputDirectory=NULL,ygeneSeq=NULL) {
 
 
   dnaAlignmentList<-suppressWarnings(tryCatch({alignWoSmorf(mySequences,algorithm = 'Muscle',ygeneSeq)},
@@ -36,9 +36,9 @@ align <- function(mySequences, orfName, path=NULL,ygeneSeq=NULL) {
     stop(paste("One of the sequences does not have any nucleotide in the aligned region for ",orfName,sep = ''))
   }
 
-  if(is.null(path)==F){
-    writeXStringSet(subalign, file=paste(paste(path,orfName, sep="/"),"subalignment.fa",sep = "_"))
-    writeXStringSet(aa_alignment,file=paste(paste(path,orfName, sep="/"),"AATranslation.fa",sep = "_"))
+  if(is.null(outputDirectory)==F){
+    writeXStringSet(subalign, file=paste(paste(outputDirectory,orfName, sep="/"),"subalignment.fa",sep = "_"))
+    writeXStringSet(aa_alignment,file=paste(paste(outputDirectory,orfName, sep="/"),"AATranslation.fa",sep = "_"))
 
   }
 

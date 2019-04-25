@@ -11,17 +11,7 @@
 calcIdentity<-function(alignment,percent=T){
   #this identity does not exclude gaps !!!!!!!
   #calculate identity matrix with percentage
-  counts<-c()
-
-  for(i in 2:length(alignment)){
-    c<-0
-    for(j in 1:length(alignment[[1]])){
-      if((alignment[[1]][j]==alignment[[i]][j]) && as.character(alignment[[1]][j])!='-'){
-        c<-c+1
-      }
-    }
-    counts<-append(counts,c)
-  }
+  counts<-calc_identity(alignment%>%as.vector(),length(alignment))
   Ref<-nchar(turnWoGaps(alignment[[1]]))
   counts<-c(Ref,counts)
   if(percent){

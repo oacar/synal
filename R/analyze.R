@@ -10,7 +10,6 @@ analyze <- function(path,orfName,types) {
     stop(paste0(path, ' does not exist. Please check the input'))
   }
 
-
   colNames<-c("ORF Name",	"Do all Start Codon Align?" ,"Do all Stop Codon Align","Length of ORF (DNA)","Length of Amino Acid Sequence ORF")
 
   for(i in 2:length(types)){
@@ -28,7 +27,6 @@ analyze <- function(path,orfName,types) {
 
   dataTable<-data.frame(matrix(ncol = length(colNames), nrow = 1))#length(list.files(p_))))
   colnames(dataTable)<-colNames
-
 
   #Read inputs####
   print(orfName)
@@ -57,15 +55,12 @@ analyze <- function(path,orfName,types) {
   dataTable$`Length of ORF (DNA)`[rw]<-nchar(turnWoGaps(subalign[[1]]))
   dataTable$`Length of Amino Acid Sequence ORF`[rw]<-nchar(turnWoGaps(aa[[1]]))
 
-
   for(i in 2:length(types)){
     name=types[i]
-
 
     AAFileName<-paste(path,'/',orfName, '_AATranslation_',name,'.fa',sep = '')
     DNAFileName<-paste(path,'/',orfName, '_subalignment_',name,'.fa',sep = '')
     AAOverlapFileName<-paste(path,'/',orfName, '_AATranslation_overlap_',name,'.fa',sep = '')
-
     check<-FALSE
 
     if(file.exists(AAFileName)){
@@ -75,20 +70,22 @@ analyze <- function(path,orfName,types) {
     }
 
 
-
-
     if(check){
       dataTable[[paste("Is there an ORF in the ",name," Amino Acid Sequence?",sep='')]][rw]<-TRUE
     }else{
       dataTable[[paste("Is there an ORF in the ",name," Amino Acid Sequence?",sep='')]][rw]<-FALSE
       AA<-FALSE
     }
+
     dataTable[[paste("What is the Start Codon in ",name, "?",sep='')]][rw]<-as.character(startAA[[i]])
     dataTable[[paste("What is the Start Codon(DNA) in ",name,"?",sep='')]][rw]<-as.character(startDNA[[i]])
     dataTable[[paste("Does start codon align in ",name,"?",sep='')]][rw]<-(as.character(startAA[[i]])==as.character(startAA[[1]]))
     dataTable[[paste("What is the Stop Codon in ",name,"?",sep='')]][rw]<-as.character(stopAA[[i]])
+
     dataTable[[paste(name," % DNA ID over Smorf Frame",sep='')]][rw]<-calcIdentity(subalign)[i]
+
     dataTable[[paste("Length of ",name," DNA Sequence over Smorf Frame",sep='')]][rw]<-nchar(turnWoGaps(subalign[[i]]))
+    
     dataTable[[paste("Number of ",name," Gaps over Smorf",sep='')]][rw]<-length(subalign[[i]])-dataTable[[paste("Length of ",name," DNA Sequence over Smorf Frame",sep='')]][rw]
 
     if(is.logical(AA)!=TRUE){
@@ -101,13 +98,10 @@ analyze <- function(path,orfName,types) {
 
     dataTable[[paste(name, " % Amino Acid over Smorf Frame",sep='')]][rw]<-calcIdentity(aa)[i]
 
-
     dataTable[[paste("Where are other \"M\" in ",name," over the Smorf",sep='')]][rw]<-findM(aa[[i]])
     dataTable[[paste("Where are other \"X\" in the ",name," over the Smorf",sep='')]][rw]<- findX(aa[[i]])
     dataTable[[paste("Is length of ORF same in ",name,"?",sep='')]][rw]<-dataTable$`Length of Amino Acid Sequence ORF`[rw]==dataTable[[paste("Length of ",name," Amino Acid Start to Finish without Gaps",sep='')]][rw]
-
   }
-
 
   return(dataTable)
 }

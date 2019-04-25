@@ -5,7 +5,8 @@
 \title{Align syntenic blocks
 This function take align syntenic blocks and then searches for proto-gene sequence on the Scer sequence using regular expressions}
 \usage{
-alignWoSmorf(sequenceSet, algorithm = "Muscle", smorfSeq = NULL)
+alignWoSmorf(sequenceSet, algorithm = "Muscle", smorfSeq = NULL,
+  aligned = F)
 }
 \arguments{
 \item{sequenceSet}{The sequences of syntenic blocks as DNAStringSet object. At leas 3 sequences are needed and last sequence should be the proto-gene}
@@ -13,6 +14,8 @@ alignWoSmorf(sequenceSet, algorithm = "Muscle", smorfSeq = NULL)
 \item{algorithm}{this function uses msa package for alignment which can use c("ClustalW", "ClustalOmega", "Muscle") as alignment algorithms. I used 'Muscle' as default. There is also standalone muscle package which is also used in this package}
 
 \item{smorfSeq}{if this is given, the {sequenceSet} is taken as full syntenic blocks, if not the last sequence of the {sequenceSet} is taken as the orf of interest sequence}
+
+\item{aligned}{if this is TRUE, then the given sequences will be taken as aligned, so no realignment will be applied.}
 }
 \value{
 list of alignment object as DNAStringSet with start and stop positions of proto-gene ORF on the aligned Scer sequence

@@ -8,7 +8,7 @@ Depends: R (>= 3.4.2)
 biocViews:
 Description: This package can align given syntenic blocks of Saccharomyces sensu stricto to analyze evolution of proto-genes on the syntenic block
 License: GPL (>= 2)
-Imports: Rcpp (>= 1.0.1),muscle , msa , Biostrings, BiocGenerics, IRanges, GenomicRanges,S4Vectors,openxlsx,foreach,doParallel,stringr
+Imports: Rcpp (>= 1.0.1),muscle , msa , Biostrings, BiocGenerics, IRanges, GenomicRanges,S4Vectors,openxlsx,foreach,doParallel,stringr,magrittr
 LazyData: true
 Encoding: UTF-8
 LinkingTo: Rcpp

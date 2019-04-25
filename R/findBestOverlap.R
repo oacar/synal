@@ -5,13 +5,19 @@
 #'@param stop last nucleotide position of proto-gene on DNAStr
 #'@param ygeneSeq proto-gene sequence without gaps. This is used for determining the frame of proto-gene with respect to the aligned other species ORF
 #'@param types this is used for names. by default c('Spar','Smik','Skud','Sbay')
-#'
+#'@param map_ygene this is the map between aligned and original sequence of ORF of interest
 #'@return list of three elements
-#'@return dna = dna alignment of jth species orf with proto-gene, aa = aa alignment with full jth ORF, aaOverlap = overlapping regions of both ORFs
+#'@return dna = dna alignment of jth species orf with proto-gene, aa = aa alignment with full jth ORF, aaOverlap = overlapping regions of both ORFs(translated), dnaOverlap=overlapping regions of both ORFs
 #'@import IRanges
 #'@export
 
 findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=NULL) {
+  
+  # if(save){
+  #   if(is.null(outputPath)|dir.exists(outputPath)==F){
+  #     stop(paste0('You asked to save all overlapping ORFs but the output path: ',outputPath,' for save is wrong!'))
+  #   }
+  # }
   subseq <- DNAStr[[j]]%>%as.character()
   #tic('ranges')
   #map_ygene <- map_alignment_sequence(DNAStr[[1]]%>%as.character(),turnWoGaps(DNAStr[[1]]%>%as.character()))
@@ -35,7 +41,7 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=N
   bestAA <- NULL
   bestDna <- NULL
   bestAAsmall <- NULL
-  
+  alldata <- list()
   #print(j)
   
   for(u in 1:length(ranges)){
@@ -61,7 +67,12 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=N
     names(unionDna) <- (types[c(1,j)])
     unionAA <- aaTranslation(unionDna,unionDna)%>%muscle(quiet = T)%>%AAStringSet()
     intersectAA <- aaTranslation(intersectDna,intersectDna)%>%muscle(quiet = T)%>%AAStringSet()
-    
+    unionDna <-  unionDna%>%muscle(quiet = T)%>%DNAStringSet()
+    intersectDna <- intersectDna%>%muscle(quiet = T)%>%DNAStringSet()
+    if(is.null(unionDna) | is.null(unionAA) | is.null(intersectAA)){
+      next
+    }
+    alldata[[u]] <- list(dna=unionDna,aa=unionAA, dnaOverlap=intersectDna,aaOverlap=intersectAA)
   
   if(is.logical(intersectAA)){
     warning(paste(names(ygeneSeq),types[j],'has a problematic overlapping ORF. Nice to check'))
@@ -70,23 +81,16 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=N
   newscore <- calcIdentity(intersectAA,percent = F)/(width(ygeneSeq)/3)
   if(score<newscore[2,1]){
     score=newscore[2,1]
-    bestAA <- unionAA
-    bestAAsmall <- intersectAA
-    bestDna <- unionDna
+    bestId=u
   }else if(score==newscore[2,1]){
     if(length(bestAA[[2]])<length(unionAA[[1]])){
       score=newscore[2,1]
-      bestAA <- unionAA
-      bestAAsmall <- intersectAA
-      bestDna <- unionDna
+      bestId=u
     }
   }
   }
-  if(is.null(bestDna) | is.null(bestAA) | is.null(bestAAsmall)){
-    return(NULL)
-  }else{
-    return(list(dna=bestDna,aa=bestAA, aaOverlap=bestAAsmall))
-  }
+    return(list(seq=alldata,id=bestId))
+  
 }
 # rm(bestDna)
 # rm(bestAA)

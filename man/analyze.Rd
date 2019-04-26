@@ -5,14 +5,16 @@
 \title{Analyze msa
 This function reads all output files previously created and analyzes the outputs}
 \usage{
-analyze(outputDirectory, orfName, types)
+analyze(outputDirectory, orfName, types, best = T)
 }
 \arguments{
 \item{outputDirectory}{folder path for reading input files}
 
 \item{orfName}{orf identifier for the orf of interest}
 
-\item{types}{this is a vector to assess which sequences exists}
+\item{types}{this is a vector to assess which species sequences exists}
+
+\item{best}{specifies whether to analyze only best overlapping orf or all.}
 }
 \description{
 Analyze msa

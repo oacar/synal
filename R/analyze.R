@@ -21,8 +21,7 @@ analyze <- function(outputDirectory,orfName,types) {
              paste("Is there an ORF in the ",name," Amino Acid Sequence?",sep=''),
              paste("Is length of ORF same in ",name,"?",sep=''),
              paste("Length of ",name," Amino Acid start to finish with Gaps",sep=''),	paste("Length of ",name," Amino Acid Start to Finish without Gaps",sep=''), paste(name, " Length Ratio",sep=''),
-             paste(name," % Amino Acid over ",name," Overlap",sep=''),	paste(name, " % Amino Acid over Smorf Frame",sep=''),	paste(name, " Number of identical Amino Acid over ",name," Overlap",sep=''),
-             paste("Where are other \"M\" in ",name," over the Smorf",sep=''),	paste("Where are other \"X\" in the ",name," over the Smorf",sep=''))
+             paste(name," % Amino Acid over ",name," Overlap",sep=''),	paste(name, " % Amino Acid over Smorf Frame",sep=''),	paste(name, " Number of identical Amino Acid over ",name," Overlap",sep=''))
     colNames <- append(colNames,cn)
   }
 
@@ -59,9 +58,9 @@ analyze <- function(outputDirectory,orfName,types) {
   for(i in 2:length(types)){
     name=types[i]
 
-    AAFileName<-paste(outputDirectory,'/',orfName, '_AATranslation_',name,'.fa',sep = '')
-    DNAFileName<-paste(outputDirectory,'/',orfName, '_subalignment_',name,'.fa',sep = '')
-    AAOverlapFileName<-paste(outputDirectory,'/',orfName, '_AATranslation_overlap_',name,'.fa',sep = '')
+    AAFileName<-paste0(outputDirectory,'/',name,'/',orfName, '_AATranslation_',name,'_best.fa')
+    DNAFileName<-paste0(outputDirectory,'/',name,'/',orfName, '_subalignment_',name,'_best.fa')
+    AAOverlapFileName<-paste0(outputDirectory,'/',name,'/',orfName, '_AATranslation_overlap_',name,'_best.fa')
     check<-FALSE
 
     if(file.exists(AAFileName)){
@@ -98,9 +97,6 @@ analyze <- function(outputDirectory,orfName,types) {
     }
 
     dataTable[[paste(name, " % Amino Acid over Smorf Frame",sep='')]][rw]<-calcIdentity(aa)[i]
-
-    dataTable[[paste("Where are other \"M\" in ",name," over the Smorf",sep='')]][rw]<-findM(aa[[i]])
-    dataTable[[paste("Where are other \"X\" in the ",name," over the Smorf",sep='')]][rw]<- findX(aa[[i]])
     dataTable[[paste("Is length of ORF same in ",name,"?",sep='')]][rw]<-dataTable$`Length of Amino Acid Sequence ORF`[rw]==dataTable[[paste("Length of ",name," Amino Acid Start to Finish without Gaps",sep='')]][rw]
   }
 

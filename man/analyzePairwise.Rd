@@ -15,11 +15,11 @@ analyzePairwise(typeName, outputDirectory, orfName, startAA, startDNA,
 
 \item{orfName}{identifier for ORF. SGD name if annotated}
 
-\item{startAA}{aminoacid start codons calculated by \method[startCodon]}
+\item{startAA}{aminoacid start codons calculated by \code{startCodon}}
 
-\item{startDNA}{dna start codons calculated by \method[startCodon]}
+\item{startDNA}{dna start codons calculated by \code{startCodon}}
 
-\item{stopAA}{aa stop codons calculated by \method[stopCodon]}
+\item{stopAA}{aa stop codons calculated by \code{stopCodon}}
 
 \item{subalign}{dna level subalignment}
 

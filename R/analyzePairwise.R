@@ -3,15 +3,14 @@
 #' @param typeName species name
 #' @param outputDirectory folder path for reading input files
 #' @param orfName identifier for ORF. SGD name if annotated
-#' @param startAA aminoacid start codons calculated by \method[startCodon]
-#' @param startDNA dna start codons calculated by \method[startCodon]
-#' @param stopAA aa stop codons calculated by \method[stopCodon]
+#' @param startAA aminoacid start codons calculated by \code{startCodon}
+#' @param startDNA dna start codons calculated by \code{startCodon}
+#' @param stopAA aa stop codons calculated by \code{stopCodon}
 #' @param subalign dna level subalignment
 #' @param aa aminoacid translation using subalignment
 #' @param df df for reference orf values
 #' @param identifier identifier for the overlapping orf name. it will be used for file names as well.
 #' @return dataFrame object
-#' @export
 
 
 analyzePairwise <- function(typeName, outputDirectory, orfName,startAA, startDNA, stopAA, subalign, aa,df,identifier='best') {

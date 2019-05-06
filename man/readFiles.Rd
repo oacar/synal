@@ -4,17 +4,18 @@
 \alias{readFiles}
 \title{Read syntetic block sequence files}
 \usage{
-readFiles(path)
+readFiles(path, specNames)
 }
 \arguments{
-\item{path}{folder path that has sequence fasta files in it
-every sequence file needs to contain its species name . (i.e. S. Cerevisiae file should contain 'scer', proto-gene sequence should contain 'smorf' or 'sequence')
+\item{path}{folder path that has sequence fasta files in it}
+
+\item{specNames}{species names to look for
+every sequence file needs to contain its species name . (i.e. S. Cerevisiae file should contain 'scer')
 also assumes there is only 1 file for every species}
 }
 \value{
 DNAStringSet object with the sequences in it 
-order of DNAStringSet : Scer(1) -> Spar(2) -> Smik(3) -> Skud(4) --> Sbay(5) --> Smorf(6) 
-if one of them does not exist, shows warning 
+order of DNAStringSet will be order of specNames
 
 TODO check for multiple files having the search string in them
 }

@@ -11,8 +11,8 @@
 
 
 alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory=NULL,specNames,...){
-  cl <- makeCluster(6)
-  registerDoParallel(cl)
+  # cl <- makeCluster(6)
+  # registerDoParallel(cl)
 
   ygeneSeq <-  findYGeneSeq(orfName)
 

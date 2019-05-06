@@ -46,7 +46,8 @@ alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory=NULL,spe
   homologs <- findHomolog(DNAStr, aa_alignment, start, stop, ygeneSeq, types, outputDirectory, orfName)
 
   dataTable <- analyze(outputDirectory,orfName,types)
-
+  write.csv(dataTable,file =paste0(outputDirectory,'/',orfName,'_data.csv'))
+  dataTable
 }
 
 

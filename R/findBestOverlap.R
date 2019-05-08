@@ -60,7 +60,7 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=N
     if(turnWoGaps(subseq_intersect)%>%nchar==0) next
     #check ygene start position
     ygene_union_int <- checkFrame(dna=DNAStr[1]%>%turnWoGaps(),map = map_ygene,unionStart,unionEnd,intersectStart,intersectEnd,start)
-    other_union_int <- checkFrame(dna=DNAStr[j]%>%turnWoGaps(),map = map_j,unionStart,unionEnd,intersectStart,intersectEnd,start(ranges_gapped_u))
+    other_union_int <- checkFrame(dna=DNAStr[j]%>%turnWoGaps(),map = map_j,unionStart,unionEnd,intersectStart,intersectEnd,start=start(ranges_gapped_u))
 
     #check other sequence start position
     intersectDna <- append(ygene_union_int$intersectDna,other_union_int$intersectDna)
@@ -141,7 +141,7 @@ checkFrame <- function(dna, map,unionStart,unionEnd,intersectStart,intersectEnd,
   if(diff_union%%3==1){
     union_start_ungapped_pos <- (union_start_ungapped_pos+1)
   }else if(diff_union%%3==2){
-    union_start_ungapped_pos <- (union_start_ungapped_pos-1)
+    union_start_ungapped_pos <- (union_start_ungapped_pos+2)
   }
 
   if(diff_intersect%%3==1){

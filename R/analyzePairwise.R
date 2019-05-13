@@ -15,6 +15,7 @@
 
 analyzePairwise <- function(typeName, outputDirectory, orfName,startAA, startDNA, stopAA, subalign, aa,df,identifier='best') {
   rw <- 1
+  i <- 2
   cn <- c( 'Identifier',paste("What is the Start Codon in ",typeName, "?",sep=''),paste("What is the Start Codon(DNA) in ",typeName,"?",sep=''),paste("Does start codon align in ",typeName,"?",sep=''),
            paste("What is the Stop Codon in ",typeName,"?",sep=''),
            paste(typeName," % DNA ID over Smorf Frame",sep=''),	paste("Length of ",typeName," DNA Sequence over Smorf Frame",sep=''),paste("Number of ",typeName," Gaps over Smorf",sep=''),

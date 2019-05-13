@@ -15,9 +15,9 @@ findHomolog <- function(DNAStr, aa_alignment, start, stop, ygeneSeq, types, outp
   all <- list()
   map_ygene <- map_alignment_sequence(DNAStr[[1]]%>%as.character(),turnWoGaps(DNAStr[[1]]%>%as.character()))
   for(j in 2:(length(DNAStr))){
-    
+
     bo <- findBestOverlap(DNAStr, j, start, stop, ygeneSeq, types,map_ygene)
-    
+
     if(is.null(bo)==F){
       if(best){#if user asks only for only best overlap, it will be returned/written to file
         if(is.null(outputDirectory)==F){
@@ -28,17 +28,18 @@ findHomolog <- function(DNAStr, aa_alignment, start, stop, ygeneSeq, types, outp
             writeXStringSet(bo$seq[[bestId]]$aa,file=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_AATranslation_",types[j],"_best.fa",sep = ""))
             writeXStringSet(bo$seq[[bestId]]$aaOverlap,file=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_AATranslation_overlap_",types[j],"_best.fa",sep = ""))
             writeXStringSet(bo$seq[[bestId]]$dnaOverlap,file=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_subalignment_overlap_",types[j],"_best.fa",sep = ""))
-            
+
           }else{
             stop(paste0('outputDirectory for writing homologs (in findHomolog) is wrong/does not exist. Please check: ',outputDirectory))
           }}
           all[[types[j]]] <- bo$seq[[bestId]]
-          
+
       }else{#all overlapping ORFs are returned otherwise
         if(is.null(outputDirectory)==F){
           if(dir.exists(outputDirectory)){
             dir.create(paste0(outputDirectory,'/',types[j]))
             for(itr in 1:length(bo$seq)){
+              if(is.null(bo$seq[[itr]])) next
               if(itr==bo$id){#add best to file name for best homolog
                 writeXStringSet(bo$seq[[itr]]$dna, file=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_subalignment_",types[j],"_best.fa",sep = ""))
                 writeXStringSet(bo$seq[[itr]]$aa,file=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_AATranslation_",types[j],"_best.fa",sep = ""))
@@ -50,16 +51,16 @@ findHomolog <- function(DNAStr, aa_alignment, start, stop, ygeneSeq, types, outp
                 writeXStringSet(bo$seq[[itr]]$aaOverlap,file=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_AATranslation_overlap_",types[j],"_",itr,".fa",sep = ""))
                 writeXStringSet(bo$seq[[itr]]$dnaOverlap,file=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_subalignment_overlap_",types[j],"_",itr,".fa",sep = ""))
               }
-             
+
             }
-            
+
           }else{
             stop(paste0('outputDirectory for writing homologs (in findHomolog) is wrong/does not exist. Please check: ',outputDirectory))
           }}
           all[[types[j]]] <- bo$seq
-          
+
       }
-      
+
     }
   }
   all

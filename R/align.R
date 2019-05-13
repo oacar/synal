@@ -3,11 +3,12 @@
 #'@param orfName ORF identifier name that will be used for file writing
 #'@param outputDirectory path for files to be written in
 #'@param ygeneSeq sequence of ORF of interest. If not given, last sequence of {mySequences} considered to be ygeneSeq
+#'@param algorithm alignment algorithm to be used. Default is 'Muscle' but 'ClustalW' and 'ClustalOmega' are available
 #'@return aligned DNAStringset, start and stop positions of orfName on DNAStringSet and AA alignment of the orfName sequence with other species
 #'@export
 
 
-align <- function(mySequences, orfName, outputDirectory=NULL,ygeneSeq=NULL) {
+align <- function(mySequences, orfName, outputDirectory=NULL,ygeneSeq=NULL,algorihm='Muscle') {
 
 
   dnaAlignmentList<-suppressWarnings(tryCatch({alignWoSmorf(mySequences,algorithm = 'Muscle',ygeneSeq)},

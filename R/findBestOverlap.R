@@ -12,7 +12,7 @@
 #'@export
 
 findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=NULL) {
-  
+
   # if(save){
   #   if(is.null(outputPath)|dir.exists(outputPath)==F){
   #     stop(paste0('You asked to save all overlapping ORFs but the output path: ',outputPath,' for save is wrong!'))
@@ -25,7 +25,7 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=N
   map_j <- map_alignment_sequence(subseq,turnWoGaps(subseq))
   range_ygene_start<- ifelse(length(map_j[map_j==start])!=0,map_j[map_j==start]%>%names()%>%as.integer(),
                                   which.max(map_j[map_j<start])%>%names()%>%as.integer)
-  
+
   range_ygene_end <- ifelse(length(map_j[map_j==stop])!=0,map_j[map_j==stop]%>%names()%>%as.integer(),
                                        which.max(map_j[map_j<stop])%>%names()%>%as.integer)
   range_ygene=IRanges(range_ygene_start,range_ygene_end)
@@ -43,7 +43,7 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=N
   bestAAsmall <- NULL
   alldata <- list()
   #print(j)
-  
+
   for(u in 1:length(ranges)){
     ranges_gapped_u <- ranges_gapped[u]
     ranges_u <- ranges[u]
@@ -53,13 +53,15 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=N
     unionStart <- start(union_range)
     intersectEnd<- end(intersect_range)
     unionEnd <- end(union_range)
-   
-    
-    
+
+
+    #check if intersect only has gaps:
+    subseq_intersect <- subseq(DNAStr[1], intersectStart,intersectEnd)
+    if(turnWoGaps(subseq_intersect)%>%nchar==0) next
     #check ygene start position
     ygene_union_int <- checkFrame(dna=DNAStr[1]%>%turnWoGaps(),map = map_ygene,unionStart,unionEnd,intersectStart,intersectEnd,start)
-    other_union_int <- checkFrame(dna=DNAStr[j]%>%turnWoGaps(),map = map_j,unionStart,unionEnd,intersectStart,intersectEnd,start(ranges_gapped_u))
-    
+    other_union_int <- checkFrame(dna=DNAStr[j]%>%turnWoGaps(),map = map_j,unionStart,unionEnd,intersectStart,intersectEnd,start=start(ranges_gapped_u))
+
     #check other sequence start position
     intersectDna <- append(ygene_union_int$intersectDna,other_union_int$intersectDna)
     unionDna <-  append(ygene_union_int$unionDna,other_union_int$unionDna)#%>%muscle()%>%DNAStringSet()
@@ -73,7 +75,7 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=N
       next
     }
     alldata[[u]] <- list(dna=unionDna,aa=unionAA, dnaOverlap=intersectDna,aaOverlap=intersectAA)
-  
+
   if(is.logical(intersectAA)){
     warning(paste(names(ygeneSeq),types[j],'has a problematic overlapping ORF. Nice to check'))
     next
@@ -90,7 +92,7 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=N
   }
   }
     return(list(seq=alldata,id=bestId))
-  
+
 }
 # rm(bestDna)
 # rm(bestAA)
@@ -114,40 +116,40 @@ checkFrame <- function(dna, map,unionStart,unionEnd,intersectStart,intersectEnd,
   start_ungapped <-map[map==start]%>%names()%>%as.integer()
 
   #this if else does this:
-  #first checks if position x has a corresponding map key in the map list. If so, returns the key value which is the position of x 
+  #first checks if position x has a corresponding map key in the map list. If so, returns the key value which is the position of x
   #on the ungapped sequence. If there is no key, then it is a gap '-' character on the gapped sequence, thus returns the key for the next
   #non-gap character.
-  #the goal of this is to find the position of union and intersection ranges and compare those to actual start-codons to conserve the 
+  #the goal of this is to find the position of union and intersection ranges and compare those to actual start-codons to conserve the
   #frame for translation. otherwise the actual orf frame might change due to extra gaps in the alignment
   union_start_ungapped_pos<- ifelse(length(map[map==unionStart])!=0,map[map==unionStart]%>%names()%>%as.integer(),
                                            which.min(map[map>unionStart])%>%names()%>%as.integer)
-  
+
   intersect_start_ungapped_pos <- ifelse(length(map[map==intersectStart])!=0,map[map==intersectStart]%>%names()%>%as.integer(),
                                                which.min(map[map>intersectStart])%>%names()%>%as.integer)
-  
+
   union_end_ungapped_pos<- ifelse(length(map[map==unionEnd])!=0,map[map==unionEnd]%>%names()%>%as.integer(),
                                     which.min(map[map>unionEnd])%>%names()%>%as.integer)
-  
+
   intersect_end_ungapped_pos <- ifelse(length(map[map==intersectEnd])!=0,map[map==intersectEnd]%>%names()%>%as.integer(),
                                          which.min(map[map>intersectEnd])%>%names()%>%as.integer)
-  
-  
+
+
   diff_union <- (start_ungapped-union_start_ungapped_pos)
-  
+
   diff_intersect <- (start_ungapped-intersect_start_ungapped_pos)
-  
+
   if(diff_union%%3==1){
     union_start_ungapped_pos <- (union_start_ungapped_pos+1)
   }else if(diff_union%%3==2){
-    union_start_ungapped_pos <- (union_start_ungapped_pos-1)
+    union_start_ungapped_pos <- (union_start_ungapped_pos+2)
   }
-  
+
   if(diff_intersect%%3==1){
     intersect_start_ungapped_pos <- (intersect_start_ungapped_pos-2)
   }else if(diff_intersect%%3==2){
     intersect_start_ungapped_pos <- (intersect_start_ungapped_pos-1)
   }
-  
+
   intersectDna <- dna%>%subseq(intersect_start_ungapped_pos,intersect_end_ungapped_pos)%>%DNAStringSet()
   unionDna <- dna%>%subseq(union_start_ungapped_pos,union_end_ungapped_pos)%>%DNAStringSet()
   return(list(intersectDna=intersectDna,unionDna=unionDna))

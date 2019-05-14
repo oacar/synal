@@ -25,9 +25,7 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=N
   map_j <- map_alignment_sequence(subseq,turnWoGaps(subseq))
   range_ygene_start<- ifelse(length(map_j[map_j==start])!=0,map_j[map_j==start]%>%names()%>%as.integer(),
                                   which.max(map_j[map_j<start])%>%names()%>%as.integer)
-  if(is.na(range_ygene_start)){
-    range_ygene_start <- which.min(map_j[map_j>start])%>%names()%>%as.integer
-  }
+
   range_ygene_end <- ifelse(length(map_j[map_j==stop])!=0,map_j[map_j==stop]%>%names()%>%as.integer(),
                                        which.max(map_j[map_j<stop])%>%names()%>%as.integer)
   range_ygene=IRanges(range_ygene_start,range_ygene_end)

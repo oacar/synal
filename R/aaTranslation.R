@@ -17,7 +17,7 @@ aaTranslation <-function(subalign, DNAStr){
       DNA_wogaps<-append(DNA_wogaps, DNAStringSet(s_wogaps))
       s_wogaps=''
     }
-    names(DNA_wogaps)=names(DNAStr)
+    names(DNA_wogaps)=names(subalign)
     attr(GENETIC_CODE, "alt_init_codons")=character(0)
     aatr<-suppressWarnings(translate(DNA_wogaps,genetic.code = GENETIC_CODE))
     for(i in 1:length(subalign)){

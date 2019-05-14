@@ -25,6 +25,8 @@ align <- function(mySequences, orfName, outputDirectory=NULL,ygeneSeq=NULL,algor
 
   # subalignment####
   subalign<-subalignment(start,stop, DNAStr)[[1]]
+  lengths <- subalign%>%sapply(turnWoGaps)%>%sapply(nchar)
+  subalign <- subalign[lengths>=3]
   subalign<-tryCatch(DNAStringSet(muscle(subalign,quiet = T)), error=function(e) FALSE)
   if(is.logical(subalign)){
     stop(paste("One of the sequences does not have any nucleotide in the aligned region for ",orfName,sep = ''))

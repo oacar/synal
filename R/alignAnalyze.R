@@ -27,7 +27,6 @@ alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory=NULL,spe
     stop("Filename is wrong. Make sure it is a directory or alignment file that exists")
   }
   #Input read------
-  vec<-speciesVector(names(mySequences),specNames)
 
 
 
@@ -37,13 +36,14 @@ alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory=NULL,spe
   start <- dnalist$dnaAlignmentList[[2]]
   stop <- dnalist$dnaAlignmentList[[3]]
   aa_alignment <- dnalist$aa_alignment
+  vec<-speciesVector(names(aa_alignment),specNames)
 
   #overlapping orfs----------------
 
 
   types<-specNames#c('scer','Spar','Smik','Skud','Sbay','Sarb')
   types <- types[vec>0]
-  homologs <- findHomolog(DNAStr, aa_alignment, start, stop, ygeneSeq, types, outputDirectory, orfName)
+  homologs <- findHomolog(DNAStr[vec>0], aa_alignment[vec>0], start, stop, ygeneSeq, types, outputDirectory, orfName)
 
   dataTable <- analyze(outputDirectory,orfName,types)
   write.csv(dataTable,file =paste0(outputDirectory,'/',orfName,'_data.csv'))

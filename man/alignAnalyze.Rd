@@ -20,6 +20,9 @@ alignAnalyze(filename, orfName, annotated = T, outputDirectory = NULL,
 
 \item{...}{placeholder for sequence file names}
 }
+\value{
+save data into csv and return dataframe
+}
 \description{
 This will be THE function for alignment-analysis output
 }

@@ -5,7 +5,7 @@
 \title{Gets DNAStringSet aligns it}
 \usage{
 align(mySequences, orfName, outputDirectory = NULL, ygeneSeq = NULL,
-  algorihm = "Muscle")
+  algorithm = "Muscle")
 }
 \arguments{
 \item{mySequences}{DNAStringSet with all sequences in it}

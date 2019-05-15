@@ -4,7 +4,10 @@
 #'@param outputDirectory folder path for reading input files
 #'@param types this is a vector to assess which species sequences exists
 #'@param best specifies whether to analyze only best overlapping orf or all.
+#'@return dataframe of analysis results
 #'@importFrom dplyr bind_cols
+#'@importFrom rlang .data
+#'@import magrittr
 #'@export
 
 analyze <- function(outputDirectory,orfName,types,best=T) {
@@ -54,7 +57,7 @@ analyze <- function(outputDirectory,orfName,types,best=T) {
     for(i in 2:length(types)){
       typeName <- types[i]
 
-      ids <- list.files(paste0(outputDirectory,'/',typeName))%>%str_split('_')%>%sapply(tail,1)%>%unique()%>%str_sub(1,str_length(.)-3)
+      ids <- list.files(paste0(outputDirectory,'/',typeName))%>%str_split('_')%>%sapply(tail,1)%>%unique()%>%str_sub(1,str_length(.data)-3)
       numOfOrfs <- length(ids)
       for(j in 1:numOfOrfs){
         dataTable <- analyzePairwise(typeName, outputDirectory, orfName,startAA, startDNA, stopAA, subalign[c(1,i)], aa[c(1,i)],df,ids[j])

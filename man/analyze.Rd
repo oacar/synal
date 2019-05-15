@@ -16,6 +16,9 @@ analyze(outputDirectory, orfName, types, best = T)
 
 \item{best}{specifies whether to analyze only best overlapping orf or all.}
 }
+\value{
+dataframe of analysis results
+}
 \description{
 Analyze msa
 This function reads all output files previously created and analyzes the outputs

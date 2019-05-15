@@ -1,14 +1,14 @@
 Package: synal
 Type: Package
 Title: Synteny Alignment and Analysis for Saccharomyces sensu stricto
-Version: 0.2
+Version: 0.2.1
 Date: 2019-04-23
 Authors@R: person("Omer", "Acar", email = "omeracar0@gmail.com", role = c("aut", "cre"))
-Depends: R (>= 3.4.2)
-biocViews:
-Description: This package can align given syntenic blocks of Saccharomyces sensu stricto to analyze evolution of proto-genes on the syntenic block
-License: GPL (>= 2)
-Imports: Rcpp (>= 1.0.1),muscle , msa , Biostrings, BiocGenerics, IRanges, GenomicRanges,S4Vectors,openxlsx,foreach,doParallel,stringr,magrittr
+Depends: R (>= 3.6)
+biocViews:  ComparativeGenomics, Genetics, WorkflowStep, Alignment, MultipleSequenceAlignment, Software
+Description: This package can align given syntenic blocks of Saccharomyces sensu stricto to analyze evolution of proto-genes on the syntenic block.
+License: file LICENSE
+Imports: Rcpp (>= 1.0.1),muscle , msa , Biostrings, IRanges,openxlsx,stringr,magrittr,dplyr,utils, rlang
 LazyData: true
 Encoding: UTF-8
 LinkingTo: Rcpp

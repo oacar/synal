@@ -7,9 +7,9 @@
 findYGeneSeq(geneName, outputPath = NULL)
 }
 \arguments{
-\item{outputPath}{path if orfName sequence will be asked to written as separate file}
+\item{geneName}{annotated orf Y----- name}
 
-\item{orfName}{annotated orf Y----- name}
+\item{outputPath}{path if orfName sequence will be asked to written as separate file}
 }
 \value{
 sequence of given orf name as DNAString instance

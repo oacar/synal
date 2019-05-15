@@ -70,5 +70,5 @@ todo:add example inputs to use in analyze function
 finally all of the above can be done using a single function for all the sequences in the given alignment file
 
 ```{r all in one, warning=FALSE}
-dataTable <- alignAnalyze('~/Downloads/combined/YBR013C/YBR013C_alignment.fa','YBR013C',outputDirectory = '../../synal_deneme/',specNames = specNames)
+#dataTable <- alignAnalyze('~/Downloads/combined/YBR013C/YBR013C_alignment.fa','YBR013C',outputDirectory = '../../synal_deneme/',specNames = specNames)
 ```

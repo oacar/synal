@@ -8,10 +8,10 @@
 #'@export
 
 
-align <- function(mySequences, orfName, outputDirectory=NULL,ygeneSeq=NULL,algorihm='Muscle') {
+align <- function(mySequences, orfName, outputDirectory=NULL,ygeneSeq=NULL,algorithm='Muscle') {
 
 
-  dnaAlignmentList<-suppressWarnings(tryCatch({alignWoSmorf(mySequences,algorithm = 'Muscle',ygeneSeq)},
+  dnaAlignmentList<-suppressWarnings(tryCatch({alignWoSmorf(mySequences,algorithm = algorithm,ygeneSeq)},
                                               error=function(cond){
                                                 stop(paste('Alignment function gives error for',orfName, 'please make sure you are giving correct input'))
                                               }))
@@ -38,8 +38,8 @@ align <- function(mySequences, orfName, outputDirectory=NULL,ygeneSeq=NULL,algor
   }
 
   if(is.null(outputDirectory)==F){
-    writeXStringSet(subalign, file=paste(paste(outputDirectory,orfName, sep="/"),"subalignment.fa",sep = "_"))
-    writeXStringSet(aa_alignment,file=paste(paste(outputDirectory,orfName, sep="/"),"AATranslation.fa",sep = "_"))
+    writeXStringSet(subalign, filepath=paste(paste(outputDirectory,orfName, sep="/"),"subalignment.fa",sep = "_"))
+    writeXStringSet(aa_alignment,filepath=paste(paste(outputDirectory,orfName, sep="/"),"AATranslation.fa",sep = "_"))
 
   }
 

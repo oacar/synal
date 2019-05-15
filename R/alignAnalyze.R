@@ -5,8 +5,8 @@
 #'@param annotated boolean shows if the given sequence is annotated or not
 #'@param specNames species names given by user provided tree. it is needed for correct output names and analysis
 #'@param ... placeholder for sequence file names
-#'
-#'
+#'@return save data into csv and return dataframe
+#'@importFrom utils file_test write.csv
 #'@export
 
 
@@ -46,7 +46,7 @@ alignAnalyze <- function(filename, orfName, annotated=T,outputDirectory=NULL,spe
   homologs <- findHomolog(DNAStr, aa_alignment, start, stop, ygeneSeq, types, outputDirectory, orfName)
 
   dataTable <- analyze(outputDirectory,orfName,types)
-  write.csv(dataTable,file =paste0(outputDirectory,'/',orfName,'_data.csv'))
+  if(is.null(outputDirectory)==F) write.csv(dataTable,file =paste0(outputDirectory,'/',orfName,'_data.csv'))
   dataTable
 }
 

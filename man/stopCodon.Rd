@@ -7,7 +7,7 @@
 stopCodon(alignment)
 }
 \arguments{
-\item{DNAStringSet}{or AAStringSet object of alignment}
+\item{alignment}{DNAStringSet or AAStringSet object of alignment}
 }
 \value{
 list of last 3 nucleotide if DNAStringSet or last aminoacid if AAStringSet

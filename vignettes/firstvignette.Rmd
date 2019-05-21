@@ -56,7 +56,7 @@ if you are interested in finding all overllaping ORFs with your ORF of interest 
 types<-specNames#c('scer','Spar','Smik','Skud','Sbay','Sarb')
 vec <- c(1,1,1,0,0,0)
 types <- types[vec>0]
-homologs <- findHomolog(DNAStr[vec>0], aa_alignment[vec>0], start, stop, ygene, types, orfName = 'YBR196C-A')
+homologs <- findHomolog(DNAStr[vec>0], start, stop, ygene, types, orfName = 'YBR196C-A')
 homologs
 ```
 

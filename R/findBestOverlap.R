@@ -29,7 +29,7 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=N
   range_ygene_end <- ifelse(length(map_j[map_j==stop])!=0,map_j[map_j==stop]%>%names()%>%as.integer(),
                                        which.max(map_j[map_j<stop])%>%names()%>%as.integer)
   range_ygene=IRanges(range_ygene_start,range_ygene_end)
-  ranges <- findOverlappingOrfs(subseq%>%turnWoGaps(),range = range_ygene)#IRanges(start,stop))
+  ranges <- findOverlappingOrfs(dna = subseq%>%turnWoGaps(),range = range_ygene)#IRanges(start,stop))
   ranges_gapped <- IRanges(map_j[start(ranges)],map_j[end(ranges)])
   if(length(ranges)==0){
     return(NULL)

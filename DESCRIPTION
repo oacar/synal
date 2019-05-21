@@ -5,15 +5,16 @@ Version: 0.2.1
 Date: 2019-04-23
 Authors@R: person("Omer", "Acar", email = "omeracar0@gmail.com", role = c("aut", "cre"))
 Depends: R (>= 3.6)
-biocViews:  ComparativeGenomics, Genetics, WorkflowStep, Alignment, MultipleSequenceAlignment, Software
+biocViews: ComparativeGenomics, Genetics, WorkflowStep, Alignment, MultipleSequenceAlignment, Software
 Description: This package can align given syntenic blocks of Saccharomyces sensu stricto to analyze evolution of proto-genes on the syntenic block.
 License: file LICENSE
-Imports: Rcpp (>= 1.0.1),muscle , msa , Biostrings, IRanges,openxlsx,stringr,magrittr,dplyr,utils, rlang
+Imports: Rcpp (>= 1.0.1),muscle , msa , Biostrings, IRanges,stringr,magrittr,dplyr,utils, rlang, methods
 LazyData: true
 Encoding: UTF-8
 LinkingTo: Rcpp
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 2.1.0)
 VignetteBuilder: knitr
 RoxygenNote: 6.1.1

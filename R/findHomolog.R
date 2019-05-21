@@ -1,6 +1,5 @@
 #'This function compares all overlapping ORFs with the Scer ORF and saves best ORF in terms of number of AAs (highest number of identical aminoacids)
 #'@param DNAStr aligned DNAStringSet with all sequences (including the ORF to be searched) in it, this is the full syntenic block not subalignment
-#'@param aa_alignment Amino acid alignment over the subalignment
 #'@param start start codon position of ygeneSeq in DNAStr
 #'@param stop last nucleotide position of ygeneSeq in DNAStr
 #'@param ygeneSeq sequence of interest
@@ -11,7 +10,7 @@
 #'@return nothing returns at the moment, all files are written in path with 3 files for each species. pairwise nucleotide alignment, pairwise AA alignment and pairwise AA alignment that shows only overlap of two ORFs
 #'@export
 
-findHomolog <- function(DNAStr, aa_alignment, start, stop, ygeneSeq, types, outputDirectory=NULL, orfName,best=FALSE) {
+findHomolog <- function(DNAStr, start, stop, ygeneSeq, types, outputDirectory=NULL, orfName='',best=FALSE) {
   all <- list()
   map_ygene <- map_alignment_sequence(DNAStr[[1]]%>%as.character(),turnWoGaps(DNAStr[[1]]%>%as.character()))
   for(j in 2:(length(DNAStr))){
@@ -20,10 +19,10 @@ findHomolog <- function(DNAStr, aa_alignment, start, stop, ygeneSeq, types, outp
 
     if(is.null(bo)==F){
       if(best){#if user asks only for only best overlap, it will be returned/written to file
+        bestId <- bo$id
         if(is.null(outputDirectory)==F){
           if(dir.exists(outputDirectory)){
             dir.create(paste0(outputDirectory,'/',types[j]))
-            bestId <- bo$id
             writeXStringSet(bo$seq[[bestId]]$dna, filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_subalignment_",types[j],"_best.fa",sep = ""))
             writeXStringSet(bo$seq[[bestId]]$aa,filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_AATranslation_",types[j],"_best.fa",sep = ""))
             writeXStringSet(bo$seq[[bestId]]$aaOverlap,filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_AATranslation_overlap_",types[j],"_best.fa",sep = ""))

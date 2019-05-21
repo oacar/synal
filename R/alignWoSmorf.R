@@ -9,24 +9,28 @@
 #'@import Biostrings
 #'@import msa
 #'@import muscle
+#'@importFrom methods is
 #'@export
 #'
 
 alignWoSmorf <- function(sequenceSet, algorithm='Muscle',smorfSeq=NULL, aligned=F) {
 
-  ## requirement : at least 3 sequences
+  ## requirement : at least 2 sequences
   l<-length(sequenceSet)
 
-  if(l<3){
-    stop("Sequence Set should have 3 or more sequences")
+  if(l<2){
+    stop("Sequence Set should have 2 or more sequences")
   }
   if(is.null(smorfSeq)){
     sub<-sequenceSet[1:l-1] ##take first l-1 sequences
     reg<-regSeq(sequenceSet[[l]])
 
   }else{
+    if(is(smorfSeq,'XStringSet')){
+      smorfSeq <- smorfSeq[[1]]
+    }
     sub <- sequenceSet
-    reg<-regSeq(smorfSeq[[1]])
+    reg<-regSeq(smorfSeq)
 
   }
 if(aligned==F){
@@ -42,7 +46,7 @@ if(aligned==F){
 }else{
   alignment=sub
 }
-  
+
 
 
   regexpr_result<-regexpr(reg, alignment[[1]], perl = TRUE)

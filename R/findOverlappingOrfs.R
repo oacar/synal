@@ -36,7 +36,7 @@ findOverlappingOrfs <- function(dna,range) {
   }
   #toc()
   newranges2 <- newranges2[newranges2%over%range]
-  newranges2 <- newranges2[width(overlapsRanges(newranges2,range))>12]
+  newranges2 <- newranges2[width(overlapsRanges(newranges2,range))>=12]
 
   newranges2
 }

@@ -36,11 +36,13 @@ analyzePairwise <- function(typeName, outputDirectory, orfName,startAA, startDNA
   AAFileName<-paste0(outputDirectory,'/',typeName,'/',orfName, '_AATranslation_',typeName,'_',identifier,'.fa')
   DNAFileName<-paste0(outputDirectory,'/',typeName,'/',orfName, '_subalignment_',typeName,'_',identifier,'.fa')
   AAOverlapFileName<-paste0(outputDirectory,'/',typeName,'/',orfName, '_AATranslation_overlap_',typeName,'_',identifier,'.fa')
+  orfFileName <- paste0(outputDirectory,'/',typeName,'/',orfName, '_orf_aa_',typeName,'_',identifier,'.fa')
   check<-FALSE
 
   if(file.exists(AAFileName)){
     AA<-readAAStringSet(AAFileName)
     overlap <- readAAStringSet(AAOverlapFileName)
+    orf <- readAAStringSet(orfFileName)
     check<-TRUE
   }else{
     warning(paste0('File: ',AAFileName, ' does not exists. Skipping...'))
@@ -68,8 +70,8 @@ analyzePairwise <- function(typeName, outputDirectory, orfName,startAA, startDNA
 
   if(is.logical(AA)!=TRUE){
     dataTable[[paste("Length of ",typeName," Amino Acid start to finish with Gaps",sep='')]][rw]<-nchar(AA[[2]])
-    dataTable[[paste("Length of ",typeName," Amino Acid Start to Finish without Gaps",sep='')]][rw]<-nchar(turnWoGaps(AA[[2]]))
-    dataTable[[paste(typeName, " Length Ratio",sep='')]][rw] <- nchar(turnWoGaps(AA[[2]]))/df$`Length of Amino Acid Sequence ORF`[rw]
+    dataTable[[paste("Length of ",typeName," Amino Acid Start to Finish without Gaps",sep='')]][rw]<-nchar(orf[[1]])
+    dataTable[[paste(typeName, " Length Ratio",sep='')]][rw] <- nchar(orf[[1]])/df$`Length of Amino Acid Sequence ORF`[rw]
     dataTable[[paste(typeName," % Amino Acid over ",typeName," Overlap",sep='')]][rw]<-calcIdentity(overlap)[2]
     dataTable[[paste(typeName, " Number of identical Amino Acid over ",typeName," Overlap",sep='')]][rw] <- calcIdentity(overlap,percent = F)[2]
   }
@@ -77,4 +79,12 @@ analyzePairwise <- function(typeName, outputDirectory, orfName,startAA, startDNA
   dataTable[[paste(typeName, " % Amino Acid over Smorf Frame",sep='')]][rw]<-calcIdentity(aa)[i]
   dataTable[[paste("Is length of ORF same in ",typeName,"?",sep='')]][rw]<-df$`Length of Amino Acid Sequence ORF`[rw]==dataTable[[paste("Length of ",typeName," Amino Acid Start to Finish without Gaps",sep='')]][rw]
   dataTable
+}
+
+#'Finding ORFs using aa sequence
+#'
+
+findORF <- function(aa_seq) {
+  str_extract_all(aa_seq,'M[^X]*X')[[1]]
+
 }

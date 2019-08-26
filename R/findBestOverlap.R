@@ -74,7 +74,10 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=N
     if(is.null(unionDna) | is.null(unionAA) | is.null(intersectAA)){
       next
     }
-    alldata[[u]] <- list(dna=unionDna,aa=unionAA, dnaOverlap=intersectDna,aaOverlap=intersectAA)
+    orfAA  <- DNAStr[[j]] %>% turnWoGaps() %>% subseq(start(ranges_u),end(ranges_u))%>%DNAStringSet() %>% translate()
+    orfAA<-chartr('*','X',orfAA)
+
+    alldata[[u]] <- list(dna=unionDna,aa=unionAA, dnaOverlap=intersectDna,aaOverlap=intersectAA, orfAA = orfAA)
 
   if(is.logical(intersectAA)){
     warning(paste(names(ygeneSeq),types[j],'has a problematic overlapping ORF. Nice to check'))

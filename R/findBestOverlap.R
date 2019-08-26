@@ -2,7 +2,7 @@
 #'@param DNAStr DNA alignment of syntenic block. This is the full alignment not subalignment
 #'@param j this is the iterator for the ID of species of interest on DNAStr and types vector
 #'@param start start position of ATG of proto-gene on DNAStr
-#'@param stop last nucleotide position of proto-gene on DNAStr
+#'@param stop_ last nucleotide position of proto-gene on DNAStr
 #'@param ygeneSeq proto-gene sequence without gaps. This is used for determining the frame of proto-gene with respect to the aligned other species ORF
 #'@param types this is used for names. by default c('Spar','Smik','Skud','Sbay')
 #'@param map_ygene this is the map between aligned and original sequence of ORF of interest
@@ -11,7 +11,7 @@
 #'@import IRanges
 #'@export
 
-findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=NULL) {
+findBestOverlap <- function(DNAStr, j,start, stop_, ygeneSeq, types , map_ygene=NULL) {
 
   # if(save){
   #   if(is.null(outputPath)|dir.exists(outputPath)==F){
@@ -21,13 +21,13 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=N
   subseq <- DNAStr[[j]]%>%as.character()
   #tic('ranges')
   #map_ygene <- map_alignment_sequence(DNAStr[[1]]%>%as.character(),turnWoGaps(DNAStr[[1]]%>%as.character()))
-  range_ygene_gapped <- IRanges(start,stop)
+  range_ygene_gapped <- IRanges(start,stop_)
   map_j <- map_alignment_sequence(subseq,turnWoGaps(subseq))
   range_ygene_start<- ifelse(length(map_j[map_j==start])!=0,map_j[map_j==start]%>%names()%>%as.integer(),
                                   which.max(map_j[map_j<start])%>%names()%>%as.integer)
 
-  range_ygene_end <- ifelse(length(map_j[map_j==stop])!=0,map_j[map_j==stop]%>%names()%>%as.integer(),
-                                       which.max(map_j[map_j<stop])%>%names()%>%as.integer)
+  range_ygene_end <- ifelse(length(map_j[map_j==stop_])!=0,map_j[map_j==stop_]%>%names()%>%as.integer(),
+                                       which.max(map_j[map_j<stop_])%>%names()%>%as.integer)
   range_ygene=IRanges(range_ygene_start,range_ygene_end)
   ranges <- findOverlappingOrfs(dna = subseq%>%turnWoGaps(),range = range_ygene)#IRanges(start,stop))
   ranges_gapped <- IRanges(map_j[start(ranges)],map_j[end(ranges)])
@@ -74,7 +74,10 @@ findBestOverlap <- function(DNAStr, j,start, stop, ygeneSeq, types , map_ygene=N
     if(is.null(unionDna) | is.null(unionAA) | is.null(intersectAA)){
       next
     }
-    alldata[[u]] <- list(dna=unionDna,aa=unionAA, dnaOverlap=intersectDna,aaOverlap=intersectAA)
+    orfAA  <- DNAStr[[j]] %>% turnWoGaps() %>% subseq(start(ranges_u),end(ranges_u))%>%DNAStringSet() %>% translate()
+    orfAA<-chartr('*','X',orfAA)
+
+    alldata[[u]] <- list(dna=unionDna,aa=unionAA, dnaOverlap=intersectDna,aaOverlap=intersectAA, orfAA = orfAA)
 
   if(is.logical(intersectAA)){
     warning(paste(names(ygeneSeq),types[j],'has a problematic overlapping ORF. Nice to check'))

@@ -27,6 +27,7 @@ findHomolog <- function(DNAStr, start, stop, ygeneSeq, types, outputDirectory=NU
             writeXStringSet(bo$seq[[bestId]]$aa,filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_AATranslation_",types[j],"_best.fa",sep = ""))
             writeXStringSet(bo$seq[[bestId]]$aaOverlap,filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_AATranslation_overlap_",types[j],"_best.fa",sep = ""))
             writeXStringSet(bo$seq[[bestId]]$dnaOverlap,filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_subalignment_overlap_",types[j],"_best.fa",sep = ""))
+            writeXStringSet(bo$seq[[bestId]]$orfAA,filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_orf_aa_",types[j],"_best.fa",sep = ""))
 
           }else{
             stop(paste0('outputDirectory for writing homologs (in findHomolog) is wrong/does not exist. Please check: ',outputDirectory))
@@ -44,11 +45,13 @@ findHomolog <- function(DNAStr, start, stop, ygeneSeq, types, outputDirectory=NU
                 writeXStringSet(bo$seq[[itr]]$aa,filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_AATranslation_",types[j],"_best.fa",sep = ""))
                 writeXStringSet(bo$seq[[itr]]$aaOverlap,filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_AATranslation_overlap_",types[j],"_best.fa",sep = ""))
                 writeXStringSet(bo$seq[[itr]]$dnaOverlap,filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_subalignment_overlap_",types[j],"_best.fa",sep = ""))
+                writeXStringSet(bo$seq[[itr]]$orfAA,filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_orf_aa_",types[j],"_best.fa",sep = ""))
               }else{
                 writeXStringSet(bo$seq[[itr]]$dna, filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_subalignment_",types[j],"_",itr,".fa",sep = ""))
                 writeXStringSet(bo$seq[[itr]]$aa,filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_AATranslation_",types[j],"_",itr,".fa",sep = ""))
                 writeXStringSet(bo$seq[[itr]]$aaOverlap,filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_AATranslation_overlap_",types[j],"_",itr,".fa",sep = ""))
                 writeXStringSet(bo$seq[[itr]]$dnaOverlap,filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_subalignment_overlap_",types[j],"_",itr,".fa",sep = ""))
+                writeXStringSet(bo$seq[[itr]]$orfAA,filepath=paste(paste(outputDirectory,types[j],orfName, sep="/"),"_orf_aa_",types[j],"_",itr,".fa",sep = ""))
               }
 
             }

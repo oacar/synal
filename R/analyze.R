@@ -60,7 +60,7 @@ analyze <- function(outputDirectory,orfName,types,best=T) {
       ids <- list.files(paste0(outputDirectory,'/',typeName))%>%str_split('_')%>%sapply(tail,1)%>%unique()%>%str_sub(1,str_length(.data)-3)
       numOfOrfs <- length(ids)
       for(j in 1:numOfOrfs){
-        dataTable <- analyzePairwise(typeName, outputDirectory, orfName,startAA, startDNA, stopAA, subalign[c(1,i)], aa[c(1,i)],df,ids[j])
+        dataTable <- analyzePairwise(typeName, outputDirectory, orfName,startAA[c(1,i)], startDNA[c(1,i)], stopAA[c(1,i)], subalign[c(1,i)], aa[c(1,i)],df,ids[j])
         if(is.null(dataTable)==F){
           df <- bind_cols(df,dataTable)
         }

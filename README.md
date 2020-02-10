@@ -12,4 +12,8 @@ devtools::install_github('oacar/synal')
 
 See the `vignettes/vignette.Rmd` for a use case. Don't hesitate to contact or open an issue.
 
-This is used in `ref will come here`
+This is used in Vakirlis et al 2020, De novo emergence of adaptive membrane proteins from thymine-rich genomic sequences, Nature Comm paper.
+
+Slightly improved python version can be found in github.com/oacar/SynORFan
+
+
